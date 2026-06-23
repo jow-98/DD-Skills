@@ -22,14 +22,24 @@ Give the user a brief one-line status update as each step completes.
 
 Pull everything the firm already knows before touching any external source. Internal intelligence takes precedence throughout.
 
-**1a. Affinity CRM**
+**1a. VC Knowledge Hub** ← start here, unified semantic search across Affinity + Granola + Drive + pitch deck PDFs in one call
+Run all in parallel:
+- `mcp__vc-knowledge-hub__search` → _"[startup name]"_ — full firm profile: Affinity data, meeting notes, pitch deck content, Drive docs
+- `mcp__vc-knowledge-hub__get_company` → startup name — detailed company record with all notes and meeting history
+- `mcp__vc-knowledge-hub__get_similar_companies` → startup name — competitors already in the firm's deal flow
+- `mcp__vc-knowledge-hub__ask` → _"What do we know about [startup name] and its competitive landscape? Include any expert or AlphaSight call notes, analyst views, and concerns raised."_
+- `mcp__vc-knowledge-hub__ask` → _"What competitors to [startup name] have we seen in our deal flow?"_
+- `mcp__vc-knowledge-hub__search` → _"[inferred market category] competitors"_ — related companies from deal flow
+
+For each competitor the hub returns, call `mcp__vc-knowledge-hub__get_company` to pull their full profile.
+
+**1b. Affinity CRM** (for pipeline stage and field values not in the hub)
 - `mcp__Affinity__search_companies` → find the CRM record and ID for the startup.
 - `mcp__Affinity__get_notes_for_entity` (entity_type=1) → all analyst notes on the startup.
 - `mcp__Affinity__get_company_list_entries` → pipeline stage and lists.
-- `mcp__Affinity__semantic_search` → _"competitors to [startup name] in [inferred market]"_ — surface related companies already tracked.
 - For any CRM-tracked competitors: `get_notes_for_entity` to pull their notes.
 
-**1b. Granola — founder calls AND expert/AlphaSight calls**
+**1d. Granola — founder calls AND expert/AlphaSight calls**
 Run all queries in parallel:
 - `mcp__Granola__query_granola_meetings` → _"[startup name] founders — product, market, competitive positioning"_
 - `mcp__Granola__query_granola_meetings` → _"[startup name] competitors risks threats concerns"_
@@ -44,7 +54,7 @@ Separate findings into:
 - **Founder/team calls** — what the startup said about their market and competitors
 - **Expert calls** — independent industry experts, AlphaSight consultants, advisors, reference calls
 
-**1c. Email — expert opinions and analyst research (Superhuman)**
+**1e. Email — expert opinions and analyst research (Superhuman)**
 Run all in parallel:
 - `mcp__Superhuman__query_email_and_calendar` → _"Expert opinions or analyst views on [startup name] or its competitors"_
 - `mcp__Superhuman__query_email_and_calendar` → _"[startup name] — market research, analyst reports, due diligence material"_
@@ -56,7 +66,7 @@ Call `mcp__Superhuman__get_thread` on relevant threads to read full content.
 
 Extract: expert names/titles, opinions on the startup and its competitors, any quantitative claims, red flags raised, validation points.
 
-**1d. Google Drive — prior memos, pitch decks, existing analyses**
+**1f. Google Drive — prior memos, pitch decks, existing analyses**
 - `mcp__Google_Drive__search_files` → `fullText contains '[startup name]'`
 - `mcp__Google_Drive__search_files` → `title contains 'Competitor'` or `title contains 'Landscape'` or `title contains 'AlphaSight'`
 - `mcp__Google_Drive__read_file_content` on relevant files.

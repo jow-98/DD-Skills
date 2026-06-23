@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "vc-knowledge-hub": {
+      "transport": {
+        "type": "sse",
+        "url": "https://vc-knowledge-hub.vercel.app/api/mcp/sse",
+        "headers": {
+          "Authorization": "Bearer TmNthiRY0MPAe8BBe4M3jfS8BcNgX0X8aNe+MD5G+pU="
+        }
+      }
+    }
+  }
+}

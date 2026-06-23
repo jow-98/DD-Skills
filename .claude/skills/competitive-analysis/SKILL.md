@@ -22,14 +22,24 @@ Work through each step in order. Give the user a brief one-line status update as
 
 Pull everything the firm already knows before touching any external source. Internal intelligence takes precedence over external data throughout the rest of the workflow.
 
-**1a. Affinity CRM**
-- `mcp__Affinity__search_companies` with the startup name → get its CRM record and ID.
-- `mcp__Affinity__get_notes_for_entity` (entity_type=1) → all analyst notes on the startup.
-- `mcp__Affinity__get_company_list_entries` → pipeline stage.
-- `mcp__Affinity__semantic_search` with _"competitors to [startup name] in [inferred market]"_ → related companies already tracked in CRM.
-- For any CRM-tracked competitors found: `get_notes_for_entity` to pull their notes too.
+**1a. VC Knowledge Hub** ← start here, it's the fastest unified search across all internal sources
+Run all in parallel:
+- `mcp__vc-knowledge-hub__search` → _"[startup name]"_ — pulls the firm's full profile: Affinity data, meeting notes, pitch deck content, Drive docs, all in one call
+- `mcp__vc-knowledge-hub__get_company` → startup name — detailed company record with notes and meeting history
+- `mcp__vc-knowledge-hub__get_similar_companies` → startup name — competitors already seen in the firm's deal flow
+- `mcp__vc-knowledge-hub__ask` → _"What do we know about [startup name] and its competitive landscape? Include any expert or AlphaSight call notes, analyst views, and concerns raised."_ — multi-step AI reasoning across all sources
+- `mcp__vc-knowledge-hub__ask` → _"What competitors to [startup name] have we seen in our deal flow? Include any companies in similar spaces."_
+- `mcp__vc-knowledge-hub__search` → _"[inferred market category] competitors"_ — surface related companies from the deal flow
 
-**1b. Granola — founder calls AND expert/AlphaSight calls**
+For each competitor the hub returns, also call `mcp__vc-knowledge-hub__get_company` to pull their full profile including any notes.
+
+**1b. Affinity CRM** (for data not captured by the hub, e.g. pipeline stage and field values)
+- `mcp__Affinity__search_companies` → find the CRM record and ID
+- `mcp__Affinity__get_notes_for_entity` (entity_type=1) → all analyst notes (may have richer detail than hub)
+- `mcp__Affinity__get_company_list_entries` → pipeline stage
+- For CRM-tracked competitors: `mcp__Affinity__get_notes_for_entity` on each
+
+**1c. Granola — founder calls AND expert/AlphaSight calls**
 Run all queries in parallel:
 - `mcp__Granola__query_granola_meetings` → _"[startup name] founders — product, market, competitive positioning"_
 - `mcp__Granola__query_granola_meetings` → _"[startup name] competitors risks threats concerns"_
@@ -45,7 +55,7 @@ Categorise what you find into two buckets:
 
 Preserve all Granola citation links `[[n]](url)` verbatim — they must appear in the final report.
 
-**1c. Email — expert opinions and analyst research (Superhuman)**
+**1d. Email — expert opinions and analyst research (Superhuman)**
 Run all in parallel:
 - `mcp__Superhuman__query_email_and_calendar` → _"Expert opinions or analyst views on [startup name] or its competitors"_
 - `mcp__Superhuman__query_email_and_calendar` → _"[startup name] — market research, analyst reports, or due diligence material"_
@@ -57,10 +67,12 @@ For any threads found, call `mcp__Superhuman__get_thread` to read the full conte
 
 Extract: expert names/titles, their specific opinions on the startup and its competitors, any quantitative claims they made, and any competitive intelligence they shared.
 
-**1d. Google Drive — prior memos, pitch decks, existing analyses**
+**1e. Google Drive — prior memos, pitch decks, existing analyses**
 - `mcp__Google_Drive__search_files` with `fullText contains '[startup name]'`
 - `mcp__Google_Drive__search_files` with `title contains 'Competitor'` or `title contains 'Landscape'` or `title contains 'AlphaSight'`
 - `mcp__Google_Drive__read_file_content` on relevant files (memos, decks, prior competitor overviews, expert summaries)
+
+Note: pitch deck PDFs attached in Affinity are already searchable via the hub's `search` tool — no need to pull them separately from Drive unless you need full document content.
 
 **Consolidation after Step 1:**
 Build an internal intelligence summary noting:
@@ -188,7 +200,7 @@ Flag any conflicts between internal views and external/expert data.
 
 ```
 # Competitive Analysis: [Startup Name]
-_[date] · Sources: Affinity, Granola (AlphaSight + founder calls), Superhuman, Google Drive, Evertrace, Specter, web search_
+_[date] · Sources: VC Knowledge Hub, Affinity, Granola (AlphaSight + founder calls), Superhuman, Google Drive, Evertrace, Specter, web search_
 
 ## Competitor Overview
 [markdown table]
