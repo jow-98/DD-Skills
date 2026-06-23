@@ -54,7 +54,7 @@ mcp__vc-knowledge-hub__get_similar_companies("<company name>")
 
 Use the output to pre-populate as many memo fields as possible before the per-source steps below. Flag any conflicts between sources (e.g. different round sizes in Affinity vs. a pitch deck in Drive).
 
-If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors in Steps 1-5 (Affinity, Granola, Specter, Google Drive, Superhuman) — those remain the authoritative sources.
+If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
 
 ---
 
