@@ -57,7 +57,7 @@ mcp__vc-knowledge-hub__get_meeting_feed()
 
 Cache: any "very disappointed" survey data, retention curve shape, NPS, churn figures, or customer reference quotes already in the pipeline. Use these as the primary evidence base before applying the frameworks below.
 
-If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
+If the VC Knowledge Hub returns no results or incomplete data, fall through to Granola, Affinity, Google Drive, and Superhuman individually — those remain the authoritative sources.
 
 ---
 
