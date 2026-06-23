@@ -47,6 +47,13 @@ Extract:
 Use `mcp__Affinity__search_companies` to find the company, then `mcp__Affinity__get_notes_for_entity` and `mcp__Affinity__get_meetings_for_entity`.
 Extract: any ICP, pricing, or market size commentary from team notes.
 
+**Evertrace — company signals & discovery:**
+Use `mcp__Evertrace__search_companies` with the startup name and relevant ICP keywords to find:
+- Similar companies or competitors that have been screened/tracked
+- Market signal data (funding events, growth signals) that imply market size
+- Company counts within a defined segment (use as a cross-check on Eurostat/Census counts)
+Also call `mcp__Evertrace__get_signals_metadata` to understand what signal types are available for this market.
+
 **Synthesise before modelling:**
 Compile a "known facts" cache:
 - Confirmed ICP (from experts / Alphasights / founders)
@@ -81,16 +88,36 @@ Use `WebSearch` to confirm ICP if unclear:
 
 For each region, find the number of companies matching ICP criteria.
 
-Use `WebSearch`:
+Use `WebSearch` with queries like:
 - `number of [industry] companies [region] >250 employees eurostat`
-- `[industry] enterprise count [region] statistics`
+- `[NACE/NAICS code] enterprises [region] size class statistics`
+- `[industry] large enterprise count [region] site:eurostat.eu OR site:census.gov`
 
-Authoritative sources (in priority order):
-- **EU**: Eurostat structural business statistics — `site:eurostat.eu`
-- **USA**: US Census Bureau County Business Patterns — `site:census.gov` or NAM for manufacturing (`site:nam.org`)
-- **UK**: ONS Business population estimates — `site:ons.gov.uk`
-- **Global**: World Bank, OECD, trade association reports
-- **Fallback**: Statista, IBISWorld, Grand View Research
+**Authoritative sources — company counts (use in priority order):**
+
+| Priority | Region | Source | Notes |
+|---|---|---|---|
+| 1 | EU | **Eurostat Structural Business Statistics** — `ec.europa.eu/eurostat/web/structural-business-statistics` | Filter by NACE code + size class (>250 employees). Most granular EU source. |
+| 1 | EU | **Bureau van Dijk / Orbis** — search `site:bvdinfo.com` or ask via WebSearch | Pan-European company database; ~500M companies. Best for precise NACE + revenue filters. |
+| 2 | EU | **Amadeus database** — `amadeus.bvdinfo.com` | EU-focused subset of Orbis; often cited in academic/industry papers — search `amadeus database [industry] [country] enterprise count` |
+| 1 | USA | **US Census Bureau County Business Patterns (CBP)** — `census.gov/programs-surveys/cbp.html` | NAICS code + employee size band. Gold standard for US counts. |
+| 2 | USA | **US Census Bureau Statistics of US Businesses (SUSB)** — `census.gov/programs-surveys/susb.html` | Alternative Census table; use for revenue-based filters. |
+| 2 | USA | **NAM Manufacturers' Outlook** — `nam.org` | For manufacturing ICP specifically. |
+| 1 | UK | **ONS Business Population Estimates** — `ons.gov.uk` | Annual publication; filter by SIC code and employee band. |
+| 2 | Global | **World Bank Enterprise Surveys** — `enterprisesurveys.worldbank.org` | Useful for emerging markets or cross-country comparisons. |
+| 3 | Global | **OECD Structural and Demographic Business Statistics** — `stats.oecd.org` | Cross-country; searchable by industry and size. |
+| 4 | Any | **Dealroom** — search `dealroom.co [industry] [region] companies` | Strong for tech/startup ecosystem counts; also covers traditional enterprises with tech exposure. |
+| 4 | Any | **PitchBook** — search `pitchbook.com [industry] [region] company count` | Good for VC-backed company counts; use for tech-adjacent ICP. |
+| 5 | Any | **Dun & Bradstreet / Hoovers** — `dnb.com` | Broad commercial database; search `site:dnb.com [industry] [region] company count` |
+| 5 | Any | **Statista, IBISWorld** | Use as fallback or cross-check only; cite original source they reference |
+
+**Sector-specific trade association sources (preferred over generic databases when available):**
+- Financial services / banking: EBF (European Banking Federation), ABA (American Bankers Assoc.)
+- Insurance: Insurance Europe, ACLI (American Council of Life Insurers)
+- Telecom: ETNO (European Telecoms), CTIA (US wireless), GSMA (global)
+- Manufacturing: Eurofer, NAM, VDA (Germany)
+- Retail: EuroCommerce, NRF (US)
+- Logistics / supply chain: ECG, GS1
 
 Record the exact source URL for each region's count. Do not estimate counts without a source.
 
@@ -105,6 +132,21 @@ Priority order:
 4. **Founder emails / CRM notes** — pricing discussed informally
 5. **Public pricing page** — search `"<startup name>" pricing`
 6. **Category benchmarks** — search `<category> SaaS ACV benchmark average contract value`
+
+**External ACV benchmarks — use when internal sources are absent or need validation:**
+
+*SaaS / software benchmarks:*
+- **OpenView SaaS Benchmarks** — `openviewpartners.com/reports` — annual survey; ACV by ARR band and go-to-market motion
+- **KeyBanc Capital Markets SaaS Survey** — search `keybanc saas survey [year] average contract value` — public summary published annually
+- **Bessemer Cloud Index / State of the Cloud** — `bvp.com/atlas/state-of-the-cloud` — ACV / ARR benchmarks for cloud businesses
+- **SaaStr Annual** — search `saastr average contract value [category] [year]` — blog posts with benchmark data from practitioners
+- **Tomasz Tunguz benchmarks** — search `tomtunguz.com ACV [category]` — data-driven VC blog with SaaS metrics
+
+*Category-specific pricing benchmarks (search these when relevant):*
+- `<category> enterprise SaaS average contract value benchmark [year]`
+- `<category> pricing model per seat per usage [year]`
+- `<competitor name> pricing page` — infer ACV from publicly listed tiers
+- `<competitor name> ARR customers` — revenue ÷ customer count = implied ACV
 
 Model 2–3 scenarios:
 - If expert WTP data exists: use it as the conservative (entry) scenario; use founder's claimed ACV as the optimistic scenario
@@ -128,11 +170,40 @@ Market Share % = realistic obtainable share given stage and GTM. Be conservative
 
 ### 6. Find top-down market reports
 
-Search for 2–3 authoritative top-down market size references:
-- `<category> total addressable market 2024 2025 billion forecast`
-- `<category> market size CAGR Gartner IDC Grand View`
+Aim for **3–5 independent top-down references** across at least two source tiers. Search in parallel:
+- `<category> total addressable market 2025 2030 billion forecast`
+- `<category> market size CAGR site:gartner.com OR site:idc.com OR site:forrester.com`
+- `<category> market report 2025 Grand View Research OR MarketsandMarkets OR Mordor Intelligence`
 
-Record: market size (current + forecast year), CAGR, source URL.
+**Tier 1 — Analyst firms (most credible; full reports paywalled but press releases/summaries are free):**
+- **Gartner** — `gartner.com/en/newsroom` — search press releases for forecast numbers
+- **IDC** — `idc.com/getdoc.jsp` or search `IDC worldwide [category] forecast [year]`
+- **Forrester** — `forrester.com/research` — search for market size reports; summaries often indexed
+- **McKinsey Global Institute** — `mckinsey.com/mgi` — look for industry deep-dives with market size data
+
+**Tier 2 — Market research publishers (widely cited; methodology varies):**
+- **Grand View Research** — `grandviewresearch.com` — strong CAGR data; search `[category] market size`
+- **MarketsandMarkets** — `marketsandmarkets.com` — detailed segment breakdowns
+- **Mordor Intelligence** — `mordorintelligence.com` — often has niche sub-segment reports
+- **Precedence Research** — `precedenceresearch.com` — good for emerging tech categories
+- **Straits Research** — `straitsresearch.com` — alternative estimate for cross-checking
+- **IMARC Group** — `imarcgroup.com` — useful for APAC and global figures
+
+**Tier 3 — Investment & ecosystem reports (strong for tech/startup markets):**
+- **a16z** — `a16z.com` — annual state-of-market reports for key tech categories (AI, fintech, bio, etc.)
+- **Bessemer / BVP Atlas** — `bvp.com/atlas` — cloud and SaaS market reports
+- **Dealroom State of European Tech** — `dealroom.co/reports` — EU market sizes and growth
+- **CB Insights** — `cbinsights.com/research` — market maps and sizing for startup categories
+- **PitchBook-NVCA Venture Monitor** — `pitchbook.com/news/reports` — sector investment data implies market size
+
+**Tier 4 — Industry bodies and government (use for regulated / traditional industries):**
+- BIS (Bank for International Settlements) — for fintech/banking
+- EBA / ECB — for European banking/payments market data
+- GSMA Intelligence — for telecoms
+- IEA / Eurostat Energy — for energy/utilities
+- WHO / EMA / FDA — for healthcare/pharma
+
+Record: market name, current size, forecast year + size, CAGR, exact source URL. Always fetch and read the actual source page — do not cite a number you haven't verified.
 
 ### 7. Generate the Excel file
 
