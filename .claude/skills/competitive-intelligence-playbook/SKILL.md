@@ -1,17 +1,6 @@
 ---
-name: competitive-intelligence
-description: Porter's Five Forces, SWOT analysis, and competitive positioning matrix for strategic market analysis. Identifies threats, opportunities, and recommends positioning strategy.
-author: Maigent AI
-version: 1.0.0
-category: foundation-strategy
-tags:
-  - competitive-analysis
-  - porter-five-forces
-  - swot
-  - market-positioning
-  - competitor-research
-  - strategic-planning
-estimatedTime: 90-150 minutes
+name: competitive-intelligence-playbook
+description: "Deep-dive strategic playbook: Porter's Five Forces scoring, SWOT, and competitive positioning matrix with recommendations. Use for thorough strategic analysis and written playbooks. Use competitive-landscape instead for lighter framework references or quick positioning maps."
 ---
 
 # Competitive Intelligence
@@ -1356,3 +1345,15 @@ END_STRATARTS_CONTEXT -->
    - `.footer-brand` or `.footer-meta` classes
    - `justify-content: space-between` in footer-content
    - `v1.0` or `v2.0.0` (incorrect version formats)
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

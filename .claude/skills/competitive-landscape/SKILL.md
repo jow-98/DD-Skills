@@ -1,7 +1,6 @@
 ---
 name: competitive-landscape
-description: This skill should be used when the user asks to "analyze competitors", "assess competitive landscape", "identify differentiation", "evaluate market positioning", "apply Porter's Five Forces", or requests competitive strategy analysis.
-version: 1.0.0
+description: "Framework reference for competitive strategy: Porter's Five Forces, Blue Ocean Strategy, and positioning maps. Use for quick framework lookups and manual analysis. Use competitive-intelligence-playbook instead when a full written strategic playbook with recommendations is needed."
 ---
 
 # Competitive Landscape Analysis
@@ -525,3 +524,15 @@ To analyze competitive landscape:
 8. **Develop strategy** - How to win
 
 For detailed frameworks and examples, see `references/` and `examples/`.
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

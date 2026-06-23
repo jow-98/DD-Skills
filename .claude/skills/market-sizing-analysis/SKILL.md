@@ -1,11 +1,6 @@
 ---
 name: market-sizing-analysis
-description: This skill should be used when the user asks to "calculate TAM",
-  "determine SAM", "estimate SOM", "size the market", "calculate market
-  opportunity", "what's the total addressable market", or requests market sizing
-  analysis for a startup or business opportunity.
-metadata:
-  version: 1.0.0
+description: "Reference skill for TAM/SAM/SOM methodology: top-down, bottom-up, and value-theory frameworks with worked examples. Use when the methodology itself is needed or as a teaching reference. For live DD market sizing with web research and source citations, use market-sizing (markdown) or market-sizing-excel (.xlsx) instead."
 ---
 
 # Market Sizing Analysis
@@ -423,3 +418,15 @@ To perform market sizing analysis:
 9. **Present** - Structure for audience (investors, strategy, operations)
 
 For detailed step-by-step guidance on each methodology, reference the files in `references/` directory. For complete worked examples, see `examples/` directory.
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

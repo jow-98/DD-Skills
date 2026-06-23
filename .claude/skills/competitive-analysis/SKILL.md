@@ -350,3 +350,15 @@ _[date] · Sources: VC Knowledge Hub, Affinity, Granola (AlphaSight + founder ca
 - Preserve all Granola citation links `[[n]](url)` verbatim in all sections.
 - The target startup is always the first table row — the baseline for all Key Difference comparisons.
 - Do not fabricate data. Mark unknown fields `?`. Accuracy over completeness in a DD context.
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

@@ -1,6 +1,6 @@
 ---
 name: startup-idea-validation
-description: "Use when validating a startup idea before building. Produces evidence-based GO/NO-GO decisions using a 9-dimension scorecard (problem, market, timing, moat, unit economics, founder-market fit, feasibility, GTM, risk), a validation ladder (interviews -> smoke test -> concierge/WoZ -> paid pilot), and riskiest-assumption-first experiments."
+description: "Standalone idea validation tool: 9-dimension GO/NO-GO scorecard and validation ladder (interviews, smoke test, concierge, paid pilot) with riskiest-assumption-first experiments. Use for pre-idea or early-stage validation. Use startup-screening instead for full 3-phase DD on an existing startup (Phase 1 already embeds this scorecard)."
 ---
 
 # Startup Idea Validation
@@ -131,3 +131,15 @@ See [hypothesis-testing-guide.md](references/hypothesis-testing-guide.md) for AI
 | File | Purpose |
 |---|---|
 | [sources.json](data/sources.json) | Curated validation resources |
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

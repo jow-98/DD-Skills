@@ -24,6 +24,13 @@ Work through each step in order. Keep the user updated with one-line status mess
 
 Before doing any external research, pull everything already in the pipeline about this startup. Run all of these in parallel:
 
+**VC Knowledge Hub — unified sweep (run first):**
+Use `mcp__vc-knowledge-hub__search` with the startup name to find all prior touchpoints across Affinity, Granola, and Drive in one pass.
+Then call `mcp__vc-knowledge-hub__get_company` for the full company profile with notes and pitch deck content extracted.
+Call `mcp__vc-knowledge-hub__ask("What market size figures, ICP definitions, and pricing assumptions has 42CAP collected for <startup name>?")` for a synthesised summary with source citations.
+Call `mcp__vc-knowledge-hub__get_similar_companies` to surface comparable companies in 42CAP deal flow — use as ICP and pricing benchmarks.
+Extract and cache: any TAM/SAM claims, ICP definitions, ACV or pricing signals, founder market size assertions.
+
 **Granola — meeting notes & expert calls:**
 Use `mcp__Granola__query_granola_meetings` with the startup name to find all recorded meetings (founder calls, expert calls, partner discussions). For each result call `mcp__Granola__get_meeting_transcript` to get the full transcript.
 Extract and cache:
@@ -353,3 +360,15 @@ Bottom-up vs. top-down: [aligned / conservative / aggressive — explain]
 - Never cite ChatGPT, Claude, or AI-generated content as a source. Only cite primary data (statistics agencies, analyst reports, company filings, reputable trade associations).
 - If Specter returns no useful data, rely on WebSearch — but always fetch and read the actual source page to verify the numbers.
 - Distinguish clearly between TAM (total universe if everyone bought), SAM (realistic serviceable subset), and SOM (obtainable share).
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

@@ -1,6 +1,6 @@
 ---
-name: competitive-analysis
-description: Research competitors and compare positioning, messaging, content strategy, and market presence. Use when analyzing a competitor, building battlecards, identifying content gaps, comparing feature messaging, or preparing competitive positioning recommendations.
+name: marketing-competitive-analysis
+description: "Use specifically for marketing-angle competitive analysis: messaging comparison, content gap analysis, battlecard creation, and GTM differentiation. NOT for general competitive landscape or DD comp analysis — use competitive-analysis for those."
 ---
 
 > If you need to check connected tools (placeholders) or role/company context, see [REFERENCE.md](../../REFERENCE.md).
@@ -8,6 +8,31 @@ description: Research competitors and compare positioning, messaging, content st
 # Competitive Analysis Skill
 
 Frameworks and methodologies for researching competitors, comparing positioning, and identifying market opportunities.
+
+## Step 0 — Pull from VC Knowledge Hub
+
+Before external research, sweep internal sources for existing competitive intelligence on this company and its market.
+
+```
+mcp__vc-knowledge-hub__search("<company name>")
+  → find all prior notes, decks, and meeting transcripts mentioning this company or its competitors
+
+mcp__vc-knowledge-hub__get_company("<company name>")
+  → company profile including any messaging, positioning notes, or battlecard content already captured
+
+mcp__vc-knowledge-hub__get_similar_companies("<company name>")
+  → competitors already in 42CAP deal flow — fast-path to identifying key rivals and their positioning
+
+mcp__vc-knowledge-hub__ask("What do we know about <company name>'s competitive positioning, messaging, and key differentiators vs. its main competitors?")
+  → synthesised answer with citations from Affinity, Granola, and Drive
+
+mcp__vc-knowledge-hub__get_meeting_feed()
+  → catch any recent expert or founder calls with competitive commentary not yet logged
+```
+
+Cache: any battlecard drafts, positioning notes, competitor mentions from founder calls, or expert commentary on market messaging. Use as the starting point before applying the frameworks below.
+
+---
 
 ## Data sources
 
@@ -234,3 +259,15 @@ Questions competitors might encourage prospects to ask you, with prepared respon
 - Update immediately after major competitor announcements
 - Incorporate win/loss feedback from sales team
 - Track which objection-handling responses are most effective
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

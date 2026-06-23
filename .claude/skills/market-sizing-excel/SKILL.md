@@ -1,6 +1,6 @@
 ---
 name: market-sizing-excel
-description: Research a startup being evaluated in due diligence and generate an Excel (.xlsx) Market Sizing file with bottom-up TAM/SAM/SOM tables by region, scenarios, top-down validation, and full source citations. Use when asked to create a market sizing Excel, build a market sizing spreadsheet, or generate a TAM/SAM file.
+description: "Research a startup in due diligence and generate an Excel (.xlsx) Market Sizing file with bottom-up TAM/SAM/SOM tables by region, scenarios, top-down validation, and source citations. Use this over market-sizing when the output must be .xlsx. Use when asked to create a market sizing Excel, build a market sizing spreadsheet, or generate a TAM/SAM file."
 ---
 
 # Market Sizing — Excel Output Skill
@@ -21,6 +21,13 @@ Keep the user updated with one-line status messages.
 ### 0. Gather all internal DD context first
 
 Before any external research, pull everything already in the pipeline. Run all of these in parallel:
+
+**VC Knowledge Hub — unified sweep (run first):**
+Use `mcp__vc-knowledge-hub__search` with the startup name to find all prior touchpoints across Affinity, Granola, and Drive in one pass.
+Then call `mcp__vc-knowledge-hub__get_company` for the full company profile with notes and pitch deck content extracted.
+Call `mcp__vc-knowledge-hub__ask("What market size figures, ICP definitions, and pricing assumptions has 42CAP collected for <startup name>?")` for a synthesised summary with source citations.
+Call `mcp__vc-knowledge-hub__get_similar_companies` to surface comparable companies in 42CAP deal flow — use as ICP and pricing benchmarks.
+Extract and cache: any TAM/SAM claims, ICP definitions, ACV or pricing signals, founder market size assertions.
 
 **Granola — meeting notes & expert calls:**
 Use `mcp__Granola__query_granola_meetings` with the startup name. For each result call `mcp__Granola__get_meeting_transcript`.
@@ -575,3 +582,15 @@ When done, report:
 - If the startup targets a niche (e.g. pharma manufacturers only), apply NACE/SIC filtering in the ICP count — do not use the full industry universe.
 - Currency: use €  if the startup is EU-based, $ if US-based. Be consistent across the file.
 - The file format must match the existing DD Excel examples: two sheets, scenario blocks, sourced rows.
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+
