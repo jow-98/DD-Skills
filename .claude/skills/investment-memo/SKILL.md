@@ -138,39 +138,61 @@ Use `references/memo-sections-guide.md` for detailed writing norms per section. 
 ### Cover block
 Pull from Affinity + user confirmation. All 6 fields required before generating.
 
-### Summary (3–5 paragraphs + key bets bullets)
-1. What the company does and the problem it solves — one clear opening sentence
-2. Why current alternatives fail — specific failure modes
-3. Traction headline — ARR, customers, key metrics proving PMF
-4. Inflection point — what this round enables and why now
-5. **Key bets for the next 18 months** — 4–6 specific, measurable bullets (e.g. "Close first 20 customers to reach €1m ARR")
+### Summary
+Four sub-elements — all required:
+1. **4-bullet overview**: Market, Solution, Go-To-Market, Team (one punchy sentence each)
+2. **"Our view" block**: Rate each of the 6 investment criteria in one line — TAM, PMF, CES (Cost-Efficient Scaling), GM% (Gross Margin), AEC (Available External Capital), TEAM
+3. **Key bets for the next 18 months** — 4–6 specific, measurable bullets (e.g. "Close first 20 enterprise clients to reach €1m ARR by Q2 2026")
+4. **Why-We-Invested / WYHTBI theses** — 3–5 conviction statements. Each must be a falsifiable belief, not a general observation.
 
-### Investment Criteria (7-row table + WYHTBI)
-Assess each criterion honestly. If PMF is early, say so. Then WYHTBI: 3–6 numbered conviction statements, each falsifiable and company-specific. See `references/memo-sections-guide.md` for per-criterion guidance.
+### Investment Criteria (7-row table)
+One row per criterion: TAM, PMF, Cost-Efficient Scaling, Gross Margin %, Available External Funding, ESG, Team Quality. Assess each honestly in 1–2 sentences. If a criterion is early or unproven, say so.
 
 ### Solution
-Problem → product modules → "magic sauce" / defensibility → roadmap (3 stages) → stickiness → tech DD summary. Include expert quotes. See guide for structure.
+Follow the exact bullet structure:
+- Value prop to customer (Theory) and customer acceptance (Practice)
+- Quality use cases (Theory) or Status MVP (Practice)
+- Details Back-end (Tech stack) and Front-end (CX)
+- Product roadmap
+- Stickiness
+- Key findings from tech deep dive
 
 ### Market & Competition
-Bottom-up market sizing table (Region / # Companies / ACV / ICP Fit % / ARR Potential / Mkt Share % / Serviceable ARR) + competition narrative. Note: ALP AI style combines Market, GTM & Competition into one section — use this if the company's market and GTM are tightly coupled.
+- Simple bottom-up model for home market, Top-5 Europe, and Global (use the market sizing table)
+- Ability and effort to scale countries (regulatory, localisation, GTM cost)
+- Overview of competition including feature comparison table
+
+Note: if company's market and GTM are tightly coupled, combine into "Market, Go-To-Market & Competition" — set `market_header` accordingly.
 
 ### Go-To-Market
-ICP → business model / pricing → sales motion → current clients (named) → pipeline → post-raise plan.
+- Initial growth hacking approach (first 0→10 customers)
+- Mid-term approach by channel: Marketing, Sales, Partner channel
+- Clients (Today — named, with ARR/contract type; Pipeline — stage and value)
+- Key findings from client reference calls (direct quotes preferred)
 
 ### ESG
-Use boilerplate from `references/esg-standard-language.md`. Replace "xxx" with company name. Customize Environmental if the company uses heavy compute or handles human biological material. Add specific positive impact sentence if relevant.
+Use boilerplate from `references/esg-standard-language.md`. Use the exact standard intro paragraph (replace "xxx" with company name). Populate Environmental / Social / Governance rows with bullet points. Close with the standard closing sentence + one positive impact bullet.
 
 ### Financials
-Top-line bullets → cost base today → cost base at 18 months → burn rate bullets → key unit economics → "Below you will find the P&L for the next 12 months:" + P&L placeholder.
+- Unit economics and quality of top-line (Recurrence, Gross Margin %)
+- Growth cost factor (what does it cost to grow €1 of revenue?)
+- Current traction (ARR, MRR, customers, growth rate)
+- Pricing (model, tiers, ACV)
+- Financial plan — simple version with key assumptions (e.g. "NN new customers p.m. at €Xk ACV")
+- Bullet structure: top-line targets → cost base today → cost base at 18m → burn → unit economics → P&L placeholder
 
 ### Funding
-Current round narrative → prior funding (CLAs, grants, angels) → use of funds → cap table.
+- Past funding rounds (what was raised, what was achieved with that capital)
+- Details current round: total size, 42CAP ticket, co-investors, use of funds (what will be proven)
+- Future funding needs: next risk step, break-even milestone
+- Potential exit channels: IPO, secondary, trade sale — include named acquisition candidates
+- Cap table (simple version)
 
 ### Team
-One paragraph per co-founder (Name, role, 2–3 prior companies, what they bring, reference call findings). Close with post-round hiring plan and talent pool note.
+One paragraph per key hire in this order: CEO (include Fund Raising Power assessment) → CPO → CRO → CFO → Other key hires. Each paragraph must include reference call findings if available.
 
 ### Additional documents
-Standard bullet list — adjust to actual materials in data room.
+Standard bullet list reflecting actual materials in the DD folder.
 
 ---
 
@@ -249,14 +271,25 @@ details_syndicate = "€Xm 42CAP + €Xm Co-investor"
 author_date       = "Author Name – Month DD, YYYY"
 ic_members        = "Alex, Thomas, Moritz, Julian, Pauline, Johannes"
 
-# Summary
-summary_paragraphs = [
-    "Paragraph 1: What the company does and the problem it solves.",
-    "Paragraph 2: Why current alternatives fail.",
-    "Paragraph 3: Traction — ARR, customers, key metrics.",
-    "Paragraph 4: Inflection point and what this round enables.",
+# Summary — 4 sub-elements
+summary_overview = [
+    # 4 bullets: Market / Solution / GTM / Team (one punchy sentence each)
+    "Market: [market size, CAGR, why now]",
+    "Solution: [what the product does and the core customer outcome]",
+    "Go-To-Market: [ICP, motion, current traction headline]",
+    "Team: [founder backgrounds and why they win this market]",
+]
+summary_our_view = [
+    # One line per criterion: TAM | PMF | CES | GM% | AEC | TEAM
+    "TAM: [€Xbn market; venture-scale opportunity]",
+    "PMF: [early signals / proven / strong — 1 supporting data point]",
+    "CES: [LTV:CAC X:1; payback X months]",
+    "GM%: [X% today; path to Y% at scale]",
+    "AEC: [co-investors, grant funding, strategic interest]",
+    "TEAM: [complementary, domain experts, prior exits]",
 ]
 key_bets = [
+    # 4–6 specific, measurable targets for the next 18 months
     "Key bet 1 — specific and measurable target",
     "Key bet 2",
     "Key bet 3",
@@ -282,14 +315,21 @@ wyhtbi_items = [
     "Conviction statement 4.",
 ]
 
-# Solution — free paragraphs
+# Solution — one paragraph per bullet; keep each focused
 solution_paragraphs = [
-    "Problem paragraph: why current alternatives fail, cost of the problem.",
-    "Product description: named modules, workflow, key differentiators.",
-    "Magic sauce: what makes the approach technically defensible.",
-    "Roadmap: 3-stage milestones over 18 months.",
-    "Stickiness: switching costs, data moat, network effects.",
-    "Tech DD summary: architecture strengths, security posture, gaps.",
+    # Value prop (Theory): what outcome does the customer get?
+    # Value prop (Practice): evidence of customer acceptance (quotes, pilots, NPS)
+    "Value prop to customer (Theory): [problem + outcome]. Customer acceptance (Practice): [evidence — pilots, quotes, retention data].",
+    # Use cases (Theory) or MVP status (Practice)
+    "Quality use cases: [named use case 1], [named use case 2]. Status MVP: [GA / beta / pilot — X active customers].",
+    # Tech stack — Back-end architecture and Front-end CX
+    "Back-end: [tech stack, infra, model type, data pipeline]. Front-end: [CX, interface, API / no-code / embedded].",
+    # Product roadmap
+    "Roadmap: Phase 1 [milestone, date] → Phase 2 [milestone, date] → Phase 3 [milestone, date].",
+    # Stickiness
+    "Stickiness: [switching costs, data moat, workflow lock-in, network effects — be specific].",
+    # Tech DD key findings
+    "Key findings tech deep dive: [architecture strengths]. [Gaps or risks identified]. [Remediation plan if applicable].",
 ]
 
 # Market sizing table — (region, n_companies, acv, icp_fit, arr_potential, mkt_share, serviceable_arr)
@@ -308,12 +348,16 @@ competition_paragraphs = [
 
 # Go-To-Market (omit if combined above)
 gtm_paragraphs = [
-    "ICP definition and initial geographic focus.",
-    "Business model and pricing tiers.",
-    "Sales motion: how deals are sourced and closed.",
-    "Current clients: named customers, ARR, contract type.",
-    "Pipeline: named opportunities by stage, total pipeline value.",
-    "Post-raise GTM plan: headcount, channel bets, targets.",
+    # Initial growth hacking approach (first 0→10 customers)
+    "Initial growth hacking: [first 0→10 customer approach — direct outreach, community, PLG, partnerships].",
+    # Mid-term by channel: Marketing / Sales / Partner channel
+    "Mid-term by channel — Marketing: [content, SEO, events, paid]. Sales: [AEs, SDRs, motion, ACV]. Partner channel: [system integrators, resellers, strategic alliances].",
+    # Clients today — named, with ARR and contract type
+    "Clients today: [Client A — ARR, use case, since when]; [Client B — ARR, use case]; [Client C — ARR, use case].",
+    # Pipeline
+    "Pipeline: [Company X — stage, value, expected close]; [Company Y — stage, value]; Total pipeline: €Xm.",
+    # Key findings from client reference calls
+    "Key findings from client reference calls: [direct quote from reference 1 — name/role if shareable]. [Key theme from reference 2]. [Any concern raised and how company addressed it].",
 ]
 
 # ESG — customize per company; see references/esg-standard-language.md
@@ -367,8 +411,14 @@ financials_unit_econ = [
 
 # Funding
 funding_paragraphs = [
-    "Current round: total size, 42CAP ticket, co-investors, and use of funds.",
-    "Prior funding: previous rounds, CLAs, grants with amounts, investors, terms.",
+    # Past funding rounds — what was raised, what was achieved
+    "Past funding: [Round type, amount, date, lead investor — what milestones were hit with that capital].",
+    # Current round — details and use of funds
+    "Current round: €Xm total; 42CAP €Xm; [co-investor] €Xm. Use of funds: [Hire X GTM FTEs], [Build Y], [Reach Z ARR]. What will be proven: [specific milestone that de-risks the next raise].",
+    # Future funding needs
+    "Future funding: Next round expected [date] at [milestone]. Break-even at [ARR/revenue level] by [date].",
+    # Exit channels
+    "Potential exit: [Trade sale — named candidates e.g. Salesforce, ServiceNow]; [Secondary market]; [IPO at €Xb+ scale]. Comparable exits: [Company A acquired by X at Y multiple].",
 ]
 
 # Cap table — (shareholder, share_class, shares, pct_undiluted, pct_fd)
@@ -382,14 +432,19 @@ cap_table_rows = [
 ]
 
 # Team — (name, role, bio_text)
+# Order: CEO → CPO → CRO → CFO → Other key hires
+# Each bio must include: prior roles + companies, what they bring, ref call findings (if available)
+# CEO bio must include Fund Raising Power assessment
 team_members = [
-    ("First Last", "CEO", "Bio: prior companies, what they bring, reference call findings if any."),
-    ("First Last", "CTO / CPO", "Bio: technical background, prior companies."),
-    ("First Last", "CCO / CRO", "Bio: commercial background, domain expertise."),
+    ("First Last", "CEO", "Prior: [Role at Company A], [Role at Company B]. Brings: [domain expertise / network / fundraising track record]. Fund Raising Power: [Strong/Moderate — specific signal]. Ref call findings: [Quote or theme from reference]."),
+    ("First Last", "CPO / CTO", "Prior: [Role at Company A]. Brings: [technical depth, product vision]. Ref call findings: [Quote or theme]."),
+    ("First Last", "CRO / CCO", "Prior: [Role at Company A]. Brings: [commercial network, GTM execution]. Ref call findings: [Quote or theme]."),
 ]
 team_closing = [
-    "Post-round hiring: X GTM + X Product FTEs targeted by Month YYYY.",
-    "Talent pool: [City/ecosystem] provides strong access to [relevant talent type].",
+    # Post-round hiring plan
+    "Post-round hiring: [X GTM + Y Product + Z Eng FTEs] targeted by [Month YYYY].",
+    # Talent pool context
+    "Talent pool: [City/ecosystem] provides strong access to [relevant talent type — e.g. AI engineers from ETH/TU Munich].",
 ]
 
 # Additional documents
@@ -465,10 +520,17 @@ doc.add_paragraph()
 
 # ── SUMMARY ───────────────────────────────────────────────────────────────────
 add_section_header(doc, "Summary")
-for para in summary_paragraphs:
-    add_body(doc, para)
+for b in summary_overview:
+    add_bullet(doc, b)
+doc.add_paragraph()
 p = doc.add_paragraph()
-p.add_run("Our key bets for the next 18 months are:").font.size = Pt(10)
+p.add_run("Our view on TAM, PMF, CES, GM%, AEC, TEAM:").font.size = Pt(10)
+p.paragraph_format.space_after = Pt(3)
+for b in summary_our_view:
+    add_bullet(doc, b)
+doc.add_paragraph()
+p = doc.add_paragraph()
+p.add_run("Key bets for the next 18 months:").font.size = Pt(10)
 p.paragraph_format.space_after = Pt(3)
 for bet in key_bets:
     add_bullet(doc, bet)
@@ -689,15 +751,17 @@ Do **not** commit the generated `.docx` to the skills repo — it is a per-deal 
 Before sending, verify:
 
 - [ ] Cover: all 6 rows filled with correct deal details, no placeholders
-- [ ] Summary: specific ARR, customer count, and named companies — no generic language
+- [ ] Summary — Overview: 4 bullets (Market, Solution, GTM, Team) — all specific, no generic language
+- [ ] Summary — Our view: all 6 criteria rated (TAM, PMF, CES, GM%, AEC, TEAM)
+- [ ] Summary — Key bets: 4–6 measurable 18-month targets, not aspirations
+- [ ] WYHTBI: 3–5 numbered conviction statements — falsifiable, company-specific
 - [ ] Investment Criteria: all 7 rows filled; ESG row present
-- [ ] WYHTBI: 3–6 numbered conviction statements (not questions)
-- [ ] Solution: named product modules with specific customer outcomes
-- [ ] Market sizing: actual numbers, not €XXX placeholders
-- [ ] Competition: named competitors with funding and differentiator
-- [ ] GTM: named current customers and pipeline companies with stage
-- [ ] ESG: company name substituted; positive impact sentence customized
-- [ ] Financials: all placeholder values replaced with numbers from financial model
-- [ ] Funding: cap table with actual shareholder names and percentages
-- [ ] Team: one paragraph per co-founder with named prior companies
-- [ ] Additional documents: list reflects actual materials in the DD folder
+- [ ] Solution: all 6 bullets covered — value prop (theory + practice), use cases/MVP, tech stack (BE + FE), roadmap, stickiness, tech DD findings
+- [ ] Market: bottom-up table with home market + Top-5 Europe + Global, sources cited
+- [ ] Competition: named competitors with feature comparison, whitespace identified
+- [ ] GTM: initial growth hacking → mid-term by channel (Marketing/Sales/Partner) → named clients + pipeline → ref call findings
+- [ ] ESG: company name substituted; Environmental/Social/Governance rows with bullets; closing sentence + positive impact
+- [ ] Financials: unit economics, growth cost factor, traction, pricing, financial plan with key assumptions (NN p.m.)
+- [ ] Funding: past rounds (achievements) → current round (use of funds + what will be proven) → future needs → exit channels with named candidates → cap table
+- [ ] Team: CEO (with Fund Raising Power) → CPO → CRO → CFO → other hires; ref call findings included
+- [ ] Additional documents: reflects actual materials in DD folder
