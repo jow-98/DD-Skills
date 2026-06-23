@@ -9,6 +9,31 @@ description: "Use specifically for marketing-angle competitive analysis: messagi
 
 Frameworks and methodologies for researching competitors, comparing positioning, and identifying market opportunities.
 
+## Step 0 — Pull from VC Knowledge Hub
+
+Before external research, sweep internal sources for existing competitive intelligence on this company and its market.
+
+```
+mcp__vc-knowledge-hub__search("<company name>")
+  → find all prior notes, decks, and meeting transcripts mentioning this company or its competitors
+
+mcp__vc-knowledge-hub__get_company("<company name>")
+  → company profile including any messaging, positioning notes, or battlecard content already captured
+
+mcp__vc-knowledge-hub__get_similar_companies("<company name>")
+  → competitors already in 42CAP deal flow — fast-path to identifying key rivals and their positioning
+
+mcp__vc-knowledge-hub__ask("What do we know about <company name>'s competitive positioning, messaging, and key differentiators vs. its main competitors?")
+  → synthesised answer with citations from Affinity, Granola, and Drive
+
+mcp__vc-knowledge-hub__get_meeting_feed()
+  → catch any recent expert or founder calls with competitive commentary not yet logged
+```
+
+Cache: any battlecard drafts, positioning notes, competitor mentions from founder calls, or expert commentary on market messaging. Use as the starting point before applying the frameworks below.
+
+---
+
 ## Data sources
 
 Use **~~SEO~~** for competitor traffic, keyword rankings, and content gaps; **~~knowledge base~~** for existing battlecards, positioning docs, and past competitive briefs; **~~product analytics~~** (if connected) for your own traffic and conversion context. See [REFERENCE.md](../../REFERENCE.md). If no tools are connected, use web search and note "Connect ~~SEO~~ or ~~knowledge base~~ for richer competitive data."
