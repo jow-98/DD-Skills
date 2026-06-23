@@ -1,6 +1,6 @@
 ---
 name: marketing-competitive-analysis
-description: "Research competitors and compare positioning, messaging, content strategy, and market presence. Use when building battlecards, identifying content gaps, comparing feature messaging, or preparing competitive positioning recommendations. Use competitive-analysis-excel instead when the output must be a .xlsx file."
+description: "Use specifically for marketing-angle competitive analysis: messaging comparison, content gap analysis, battlecard creation, and GTM differentiation. NOT for general competitive landscape or DD comp analysis — use competitive-analysis for those."
 ---
 
 > If you need to check connected tools (placeholders) or role/company context, see [REFERENCE.md](../../REFERENCE.md).
