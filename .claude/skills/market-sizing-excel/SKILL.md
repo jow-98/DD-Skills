@@ -7,6 +7,8 @@ description: Research a startup being evaluated in due diligence and generate an
 
 Research a startup's addressable market and produce a `.xlsx` file with a bottom-up market sizing in the standard DD format, including sourced data, scenario tables, and a top-down sanity check sheet.
 
+**Default methodology: Bottom-Up.** Always build the bottom-up model first (ICP company count × ACV × ICP Fit % × Market Share %). Top-down is a sanity check only — never drive the model from a top-down number. See `references/market-sizing-guide.md` for ICP definition standards, ACV benchmarks by category, and guidance on justifying ICP Fit % and Market Share %.
+
 ## Input
 
 Invoked as `/market-sizing-excel <Startup Name>` or with a company name / URL in args.
@@ -442,7 +444,7 @@ Fill all data variables with actual research results, then execute.
 
 ### 7b. Optional Sheet 3: "Value-Theory"
 
-Add this sheet when the startup creates a new category, displaces significant existing spend, or when bottom-up and top-down are diverging significantly. Skip it otherwise and note "Not applicable — comparable pricing exists."
+**Skip by default.** Add this sheet only when: (a) the startup is creating a new category with no ACV benchmark, (b) it displaces significant existing spend (e.g. replacing a manual process costing >€100k/yr per company), or (c) bottom-up and top-down diverge by >5×. See `references/market-sizing-guide.md` for when to use Value-Theory and how to set the WTP % assumption.
 
 #### Sheet 3 layout
 

@@ -7,6 +7,8 @@ description: Research competitors for a startup being evaluated in due diligence
 
 Research a startup's competitive landscape using every available knowledge source and produce a `.xlsx` Competitor Overview file in the standard DD format.
 
+**Reference file**: `references/competitive-analysis-guide.md` contains column-by-column writing guidance, Porter's Five Forces scoring rules, SWOT quality standards, messaging matrix instructions, and channel coverage scoring. Consult it for any judgement calls on content quality or framing.
+
 ## Input
 
 Invoked as `/competitive-analysis-excel <Startup Name>` or with a company name / URL in args.
