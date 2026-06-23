@@ -1,6 +1,6 @@
 ---
 name: competitive-landscape
-description: "Framework reference for competitive strategy: Porter's Five Forces, Blue Ocean Strategy, and positioning maps. Use for quick framework lookups and manual analysis. Use competitive-intelligence-playbook instead when a full written strategic playbook with recommendations is needed."
+description: "This skill should be used when the user asks to analyze competitors, assess competitive landscape, identify differentiation, evaluate market positioning, apply Porter's Five Forces, or requests competitive strategy analysis."
 ---
 
 # Competitive Landscape Analysis

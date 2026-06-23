@@ -1,6 +1,6 @@
 ---
 name: market-sizing-analysis
-description: "Reference skill for TAM/SAM/SOM methodology: top-down, bottom-up, and value-theory frameworks with worked examples. Use when the methodology itself is needed or as a teaching reference. For live DD market sizing with web research and source citations, use market-sizing (markdown) or market-sizing-excel (.xlsx) instead."
+description: "This skill should be used when the user asks to calculate TAM, determine SAM, estimate SOM, size the market, calculate market opportunity, or requests market sizing analysis for a startup or business opportunity."
 ---
 
 # Market Sizing Analysis
