@@ -310,6 +310,211 @@ Fill all data variables with actual research, then execute with `Bash`.
 
 ---
 
+### Step 7b — Add Sheet 2: "Strategic Frameworks"
+
+After the main competitor sheet is written, add a second sheet with Porter's Five Forces scoring and the target startup's SWOT.
+
+#### Sheet 2 layout
+
+**Section A — Porter's Five Forces** (rows 1–8)
+
+Row 1: Section header "Porter's Five Forces" — bold, merged, `BFBFBF` fill.
+Row 2: Column headers: `Force | Score (1–5) | Key Factors | Implication | Internal Source`
+Rows 3–7: One row per force (New Entrants, Supplier Power, Buyer Power, Substitutes, Rivalry). Score sourced from expert intel in Step 1 where possible.
+Row 8: "Overall Attractiveness" — merged label with 1–2 sentence summary.
+
+**Section B — SWOT** (rows 10–onward, after a blank row)
+
+Row 10: Section header "SWOT — [Target Startup]" — bold, merged, `BFBFBF` fill.
+Row 11: Four column headers: `Strengths | Weaknesses | Opportunities | Threats`
+Rows 12+: 3–5 bullet items per quadrant (one bullet per row), left-aligned, wrap text.
+- Strengths/Weaknesses: grey fill `F2F2F2`
+- Opportunities: light green fill `E2EFDA`
+- Threats: light red fill `FCE4D6`
+
+**Section C — Competitive Positioning Map** (after SWOT, blank row separator)
+
+Column headers: `Company | Tier | Price (1-10) | Features (1-10) | Positioning Note`
+Target startup row: `FFFACD` (yellow) fill.
+Sort: target first, then Direct, Adjacent, Incumbent.
+
+Sheet name: `Strategic Frameworks`
+
+```python
+# Add to existing Python script after wb.save() block — create before saving
+
+ws2 = wb.create_sheet("Strategic Frameworks")
+
+# --- Porter's Five Forces ---
+forces = [
+    ("Threat of New Entrants",        3, "Capital/tech barriers, network effects",    "Moderate barrier; monitor well-funded entrants"),
+    ("Bargaining Power of Suppliers",  2, "Multiple cloud providers available",        "Low risk; commodity infrastructure"),
+    ("Bargaining Power of Buyers",     4, "Enterprise buyers; concentrated spend",     "Negotiate on pricing; build switching costs"),
+    ("Threat of Substitutes",          3, "Manual processes; adjacent products",       "Educate on ROI vs. DIY alternatives"),
+    ("Competitive Rivalry",            4, "10+ direct competitors; fast-growing space","Differentiate on [key dimension]"),
+]
+
+ws2.cell(1, 1, "Porter's Five Forces").font = Font(bold=True)
+ws2.cell(1, 1).fill = PatternFill("solid", fgColor="BFBFBF")
+ws2.merge_cells(start_row=1, start_column=1, end_row=1, end_column=5)
+
+p5f_headers = ["Force", "Score (1–5)", "Key Factors", "Implication", "Internal Source"]
+for ci, h in enumerate(p5f_headers, 1):
+    c = ws2.cell(2, ci, h)
+    c.font = Font(bold=True); c.fill = PatternFill("solid", fgColor="D9D9D9")
+    c.border = border; c.alignment = Alignment(wrap_text=True)
+
+for ri, (force, score, factors, impl) in enumerate(forces, 3):
+    for ci, val in enumerate([force, score, factors, impl, ""], 1):
+        c = ws2.cell(ri, ci, val)
+        c.border = border; c.alignment = Alignment(wrap_text=True, vertical="top")
+
+ws2.cell(8, 1, "Overall Market Attractiveness:").font = Font(bold=True)
+ws2.cell(8, 2, "Moderate — [1-2 sentence summary]")
+ws2.merge_cells(start_row=8, start_column=2, end_row=8, end_column=5)
+
+# --- SWOT ---
+ws2.cell(10, 1, f"SWOT — {startup_name}").font = Font(bold=True)
+ws2.cell(10, 1).fill = PatternFill("solid", fgColor="BFBFBF")
+ws2.merge_cells(start_row=10, start_column=1, end_row=10, end_column=4)
+
+swot_headers = ["Strengths", "Weaknesses", "Opportunities", "Threats"]
+swot_fills   = ["F2F2F2",    "F2F2F2",     "E2EFDA",        "FCE4D6"]
+for ci, (h, fill) in enumerate(zip(swot_headers, swot_fills), 1):
+    c = ws2.cell(11, ci, h)
+    c.font = Font(bold=True); c.fill = PatternFill("solid", fgColor=fill)
+    c.border = border; c.alignment = Alignment(horizontal="center")
+
+swot_data = {
+    "Strengths":     ["[Strength 1]", "[Strength 2]", "[Strength 3]"],
+    "Weaknesses":    ["[Weakness 1]", "[Weakness 2]", "[Weakness 3]"],
+    "Opportunities": ["[Opportunity 1]", "[Opportunity 2]", "[Opportunity 3]"],
+    "Threats":       ["[Threat 1]", "[Threat 2]", "[Threat 3]"],
+}
+max_rows = max(len(v) for v in swot_data.values())
+for ri in range(max_rows):
+    for ci, (key, fill) in enumerate(zip(swot_headers, swot_fills), 1):
+        items = swot_data[key]
+        val = items[ri] if ri < len(items) else ""
+        c = ws2.cell(12 + ri, ci, val)
+        c.fill = PatternFill("solid", fgColor=fill)
+        c.border = border; c.alignment = Alignment(wrap_text=True, vertical="top")
+
+# --- Positioning Map ---
+pos_start = 14 + max_rows
+ws2.cell(pos_start, 1, "Competitive Positioning Map").font = Font(bold=True)
+ws2.cell(pos_start, 1).fill = PatternFill("solid", fgColor="BFBFBF")
+ws2.merge_cells(start_row=pos_start, start_column=1, end_row=pos_start, end_column=5)
+
+pos_headers = ["Company", "Tier", "Price (1–10)", "Features (1–10)", "Positioning Note"]
+for ci, h in enumerate(pos_headers, 1):
+    c = ws2.cell(pos_start + 1, ci, h)
+    c.font = Font(bold=True); c.fill = PatternFill("solid", fgColor="D9D9D9")
+    c.border = border
+
+# Fill positioning rows from companies list (reuse from Sheet 1)
+for ri, co in enumerate(companies, pos_start + 2):
+    vals = [co["name"], co["category"], "", "", ""]  # fill price/features scores from research
+    for ci, val in enumerate(vals, 1):
+        c = ws2.cell(ri, ci, val)
+        c.border = border; c.alignment = Alignment(wrap_text=True, vertical="top")
+    if ri == pos_start + 2:  # target row
+        for ci in range(1, 6):
+            ws2.cell(ri, ci).fill = PatternFill("solid", fgColor="FFFACD")
+
+ws2.freeze_panes = "A3"
+for col in ws2.columns:
+    maxw = max((len(str(c.value)) for c in col if c.value), default=8)
+    ws2.column_dimensions[get_column_letter(col[0].column)].width = min(maxw + 2, 50)
+```
+
+---
+
+### Step 7c — Add Sheet 3: "Marketing Intel"
+
+Add a third sheet with the messaging matrix and content/channel coverage.
+
+#### Sheet 3 layout
+
+**Section A — Messaging Matrix** (rows 1–onward)
+
+Row 1: Section header "Messaging & Positioning" — bold, merged, `BFBFBF` fill.
+Row 2: Company names as column headers (target first, then top 3–5 competitors). First column = Dimension label.
+Rows 3–10: One row per messaging dimension (Tagline, Value Prop, Primary Audience, Differentiator Claim, Tone, Proof Points, Category Framing, CTA).
+
+**Section B — Channel Coverage** (after blank row)
+
+Row header: "Content & Channel Coverage" — merged, `BFBFBF` fill.
+Sub-headers: same company ordering as messaging matrix. First column = Channel/Format.
+Rows: Blog/SEO, Case Studies, Whitepapers, Webinars, Video, G2/Reviews, Paid Ads, Community.
+Cells: "Strong" / "Present" / "Weak" / "None" — color-coded (green/yellow/orange/red fill).
+
+Sheet name: `Marketing Intel`
+
+```python
+ws3 = wb.create_sheet("Marketing Intel")
+
+# Derive competitor names from companies list
+all_names = [co["name"] for co in companies[:6]]  # target + top 5
+
+# --- Messaging Matrix ---
+ws3.cell(1, 1, "Messaging & Positioning").font = Font(bold=True)
+ws3.cell(1, 1).fill = PatternFill("solid", fgColor="BFBFBF")
+ws3.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(all_names) + 1)
+
+for ci, name in enumerate(["Dimension"] + all_names, 1):
+    c = ws3.cell(2, ci, name)
+    c.font = Font(bold=True); c.fill = PatternFill("solid", fgColor="D9D9D9")
+    c.border = border; c.alignment = Alignment(wrap_text=True)
+
+msg_dimensions = [
+    "Tagline / Headline", "Core Value Proposition", "Primary Audience",
+    "Key Differentiator Claim", "Tone / Voice", "Proof Points Used",
+    "Category Framing", "Primary CTA",
+]
+for ri, dim in enumerate(msg_dimensions, 3):
+    ws3.cell(ri, 1, dim).font = Font(bold=True)
+    ws3.cell(ri, 1).border = border
+    for ci in range(2, len(all_names) + 2):
+        c = ws3.cell(ri, ci, "")  # fill from research
+        c.border = border; c.alignment = Alignment(wrap_text=True, vertical="top")
+    if ri == 3:  # target column highlight
+        for ri2 in range(3, 3 + len(msg_dimensions)):
+            ws3.cell(ri2, 2).fill = PatternFill("solid", fgColor="FFFACD")
+
+# --- Channel Coverage ---
+chan_start = len(msg_dimensions) + 5
+ws3.cell(chan_start, 1, "Content & Channel Coverage").font = Font(bold=True)
+ws3.cell(chan_start, 1).fill = PatternFill("solid", fgColor="BFBFBF")
+ws3.merge_cells(start_row=chan_start, start_column=1, end_row=chan_start, end_column=len(all_names) + 1)
+
+for ci, name in enumerate(["Channel / Format"] + all_names, 1):
+    c = ws3.cell(chan_start + 1, ci, name)
+    c.font = Font(bold=True); c.fill = PatternFill("solid", fgColor="D9D9D9")
+    c.border = border
+
+channels = ["Blog / SEO", "Case Studies", "Whitepapers / Ebooks",
+            "Webinars / Events", "Video Content", "G2 / Review Sites",
+            "Paid Ads", "Community / Forum"]
+coverage_fills = {"Strong": "C6EFCE", "Present": "FFEB9C", "Weak": "FFCC99", "None": "FFC7CE", "": "FFFFFF"}
+
+for ri, chan in enumerate(channels, chan_start + 2):
+    ws3.cell(ri, 1, chan).border = border
+    for ci in range(2, len(all_names) + 2):
+        val = ""  # fill from research: "Strong" / "Present" / "Weak" / "None"
+        c = ws3.cell(ri, ci, val)
+        c.border = border
+        c.fill = PatternFill("solid", fgColor=coverage_fills.get(val, "FFFFFF"))
+        c.alignment = Alignment(horizontal="center")
+
+ws3.freeze_panes = "B3"
+for col in ws3.columns:
+    maxw = max((len(str(c.value)) for c in col if c.value), default=10)
+    ws3.column_dimensions[get_column_letter(col[0].column)].width = min(maxw + 2, 40)
+```
+
+---
+
 ### Step 8 — Verify the output
 
 ```bash
@@ -317,10 +522,13 @@ ls -lh <output_path>
 python3 -c "
 import openpyxl
 wb = openpyxl.load_workbook('<output_path>')
-ws = wb.active
-print(f'{ws.max_row} rows x {ws.max_column} cols — OK')
+for name in wb.sheetnames:
+    ws = wb[name]
+    print(f'{name}: {ws.max_row} rows x {ws.max_column} cols — OK')
 "
 ```
+
+Expected output: three sheets — `Tabellenblatt1`, `Strategic Frameworks`, `Marketing Intel`.
 
 ---
 
