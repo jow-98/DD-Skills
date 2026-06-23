@@ -1,6 +1,6 @@
 ---
 name: competitive-intelligence-playbook
-description: "Deep-dive strategic playbook: Porter's Five Forces scoring, SWOT, and competitive positioning matrix with recommendations. Use for thorough strategic analysis and written playbooks. Use competitive-landscape instead for lighter framework references or quick positioning maps."
+description: "Porter's Five Forces, SWOT analysis, and competitive positioning matrix for strategic market analysis. Identifies threats, opportunities, and recommends positioning strategy."
 ---
 
 # Competitive Intelligence
