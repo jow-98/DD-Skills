@@ -5,106 +5,172 @@ description: Research competitors for a startup being evaluated in due diligence
 
 # Competitive Analysis — Excel Output Skill
 
-Research a startup's competitive landscape and produce an `.xlsx` file in the standard DD Competitor Overview format.
+Research a startup's competitive landscape using every available knowledge source and produce a `.xlsx` Competitor Overview file in the standard DD format.
 
 ## Input
 
 Invoked as `/competitive-analysis-excel <Startup Name>` or with a company name / URL in args.
-Optional: the user may also pass a target output path. Default path: `./<StartupName>__Competitor_Overview.xlsx`
+Optional: user may pass a target output path. Default: `./<StartupName>__Competitor_Overview.xlsx`
 
 ## Workflow
 
-Keep the user updated with one-line status messages as you go.
+Give the user a brief one-line status update as each step completes.
 
-### 1. Resolve the target company
+---
 
-Use `mcp__Specter__find_company` with the startup name or URL.
-Then call `mcp__Specter__get_company_profile` + `mcp__Specter__get_company_intelligence` on the resolved ID.
+### Step 1 — Internal knowledge sweep (run all in parallel)
+
+Pull everything the firm already knows before touching any external source. Internal intelligence takes precedence over external data.
+
+**1a. Affinity CRM**
+- `mcp__Affinity__search_companies` with the startup name to find the CRM record and its ID.
+- If found, call `mcp__Affinity__get_notes_for_entity` (entity_type=1) to get all analyst notes on the startup.
+- Call `mcp__Affinity__get_company_list_entries` to check which pipeline lists it's on and what stage.
+- Run `mcp__Affinity__semantic_search` with _"competitors to [startup name] in [inferred market]"_ to surface related companies already tracked in the CRM.
+- For any CRM-tracked competitors found, also pull their notes with `get_notes_for_entity`.
+
+**1b. Granola meeting notes**
+- `mcp__Granola__query_granola_meetings` with:
+  - _"[startup name] — what did the founders say about their competitors?"_
+  - _"[startup name] — product differentiation, market positioning"_
+  - _"[startup name] — risks, competitive threats, concerns raised"_
+- Call `mcp__Granola__get_meetings` on any relevant meeting IDs for full summaries and private notes.
+- Extract any competitor names, market observations, or founder quotes about competition.
+
+**1c. Email (Superhuman)**
+- `mcp__Superhuman__query_email_and_calendar`:
+  - _"What emails do we have about [startup name]?"_
+  - _"Any analyst reports, market research, or competitor comparisons related to [startup name] or [inferred market]?"_
+- `mcp__Superhuman__list_threads` with `subject_contains` or `body_contains` = startup name to find pitch emails, forwarded research, follow-ups.
+- Extract competitor mentions, market intel, and any analyst commentary.
+
+**1d. Google Drive**
+- `mcp__Google_Drive__search_files` with `fullText contains '[startup name]'` to find memos, decks, prior analyses.
+- `mcp__Google_Drive__search_files` with `title contains 'Competitor'` or `title contains 'Landscape'` to find prior competitive analyses.
+- Call `mcp__Google_Drive__read_file_content` on relevant files (investment memos, pitch decks, competitor overviews).
+- Extract: competitor names mentioned, feature comparisons already done, analyst observations.
+
+Consolidate Step 1 findings. Note which competitors were already known internally and any views/scores already attached to them.
+
+---
+
+### Step 2 — Resolve the target company via Specter
+
+- `mcp__Specter__find_company` with the startup name or URL.
+- `mcp__Specter__get_company_profile` + `mcp__Specter__get_company_intelligence` on the resolved ID.
 
 Extract and cache:
-- Full name, website, HQ country code (2-letter ISO), headcount, founding year
-- Product description (max 200 chars)
-- Last funding (format: `$Xm\nRound Year`, e.g. `$12M\nSeries A 2024`; write `N/A` if unknown)
-- Investor names (comma-separated, max ~60 chars)
+- Full name, website, HQ country (ISO-2 code), headcount (number), founding year (number)
+- Product description (≤200 chars)
+- Last funding: format as `$Xm\nRound Year` (e.g. `$12M\nSeries A 2024`); `N/A` if unknown
+- Investor names (≤60 chars, comma-separated)
 - Primary product category / market segment
 
-### 2. Identify competitors
+---
 
-Use `mcp__Specter__find_similar_companies` on the resolved company ID.
+### Step 3 — Identify competitors
 
-Supplement with `WebSearch`:
-- `"<startup name>" competitors 2024 2025`
-- `best alternatives to "<startup name>"`
+Triangulate from three sources:
 
-Build a deduplicated list of 10–20 competitors across:
-- **Direct** – same product, same customer, same stage
-- **Adjacent** – same problem, different approach or segment
-- **Incumbent** – established players the startup displaces
+**3a. Specter**
+- `mcp__Specter__find_similar_companies` on the resolved company ID.
 
-### 3. Research each competitor
+**3b. Evertrace talent signals**
+- `mcp__Evertrace__search_companies` for the startup name to get its entity ID (exe_* format).
+- `mcp__Evertrace__list_signals` with `past_companies=[entity_id]` — surfaces people from the startup's talent pool and which other companies they've worked at, revealing the real competitive talent ecosystem.
+- Repeat for 2–3 named competitors to map cross-company talent flows.
 
-For each competitor call `mcp__Specter__find_company` → `mcp__Specter__get_company_profile`.
+**3c. Web search**
+- `WebSearch`: _"[startup name] competitors 2024 2025"_
+- `WebSearch`: _"best alternatives to [startup name]"_
+- `WebSearch`: _"[market category] competitive landscape [year]"_
+
+Merge all sources. Prioritise companies appearing in multiple sources or flagged in Step 1 internal intel.
+Target 10–20 competitors:
+- **Direct** — same product, same buyer, same stage
+- **Adjacent** — same problem, different approach or segment
+- **Incumbent** — established players being displaced
+
+---
+
+### Step 4 — Research each competitor
+
+For each competitor, collect data from multiple sources:
+
+| Source | What to call |
+|--------|-------------|
+| Specter | `find_company` → `get_company_profile` for core data |
+| Affinity | `search_companies` → if found, `get_notes_for_entity` for internal analyst notes |
+| Granola | `query_granola_meetings` — any calls with this competitor? |
+| Superhuman | `query_email_and_calendar` — any email intel about this competitor? |
+| Web | `WebSearch` or `WebFetch` their site to fill remaining gaps |
 
 Collect for each:
-- Company name, URL, HQ country code, headcount (number), founding year (number)
-- Product description (max 200 chars)
-- Last funding string (format as above; `Acquired` or `Incumbent` for those cases)
-- Investor names (max ~60 chars)
-- Key Difference from the target startup (max 200 chars — specific, not vague)
-- Category (e.g. "Direct Competitor", "Adjacent", "Incumbent")
+- Company name, URL, HQ (ISO-2), headcount (number), founding year (number)
+- Product description (≤200 chars)
+- Last funding string (format: `$Xm\nRound Year`; `Acquired` / `Incumbent` / `N/A` as appropriate)
+- Investor names (≤60 chars)
+- **Key Difference** from the target startup (≤200 chars — specific: *how* they differ in approach, focus, customer, not just "less advanced")
+- Category: Direct / Adjacent / Incumbent
 
-Use `WebSearch` to fill gaps when Specter returns no result.
+---
 
-### 4. Determine feature dimensions
+### Step 5 — Determine feature dimensions
 
-Analyse the target company's product and decide on 5–8 binary feature/capability dimensions that matter in this market. These become the feature-check columns in the Excel.
+Based on the target startup's product, pick 5–8 binary dimensions that best differentiate competitors in this market. Use Step 1 internal intel and product research to choose dimensions the founders and analysts have actually discussed.
 
 Examples by domain:
-- **Procurement / spend analytics**: Supplier data & discovery | Spend analytics & intelligence | Procurement automation | AI-driven automation | Real-time insights | Supplier-data enrichment | Workflow automation
+- **Procurement / spend**: Supplier data & discovery | Spend analytics & intelligence | Procurement automation | AI-driven automation | Real-time insights | Supplier-data enrichment | Workflow automation
 - **Robotics / safety**: HW / SW | Robot type | Use case focus | State (static/dynamic) | Human/AMR interaction | Human behavior prediction
 - **Voice AI**: Model type | Tool/Func. call | State transitions | SIP/Telephony | REST API | Agent builder | Orch. SDK | Self-hosting | Multilingual | Open source | Inbound calls | Outbound calls
-- **Cybersecurity / identity**: Category (sub-segment) | Open source
+- **AI / cybersecurity**: Category sub-segment | Open source | Runtime detection | Red-teaming | NHI/secrets mgmt
 
-Use domain knowledge and the target company's feature set to decide the right dimensions. Aim for dimensions where competitors meaningfully differ.
+---
 
-### 5. Score feature dimensions
+### Step 6 — Score feature dimensions
 
-For each company (target + competitors), mark each dimension:
-- `x` = feature present / confirmed
-- `(x)` = partial or limited support
-- leave blank / `None` = feature absent or unknown
+For each company (target + all competitors), mark each feature dimension:
+- `x` = confirmed present
+- `(x)` = partial or limited
+- leave blank = absent or unknown
 
-Base scores on Specter intelligence, company websites, and web search results. Do not guess — if unknown leave blank.
+Base on: Specter intelligence, company websites, product pages, Granola founder call notes (what founders claimed), email intel. Do not guess — blank if uncertain.
 
-### 6. Generate the Excel file
+---
 
-Write a Python script and execute it with `Bash` to create the `.xlsx` file.
+### Step 7 — Generate the Excel file
 
-#### Excel structure (match exactly):
+Install openpyxl if needed:
+```bash
+pip install openpyxl -q
+```
+
+Write and execute a Python script to generate the file. Use this structure exactly:
+
+#### Excel layout
 
 **Row 1 — Section header row:**
 - A1: empty
-- B1: `Overview` (merged across Overview columns)
-- Next group start: `Category` (merged if needed)
-- Next group start: `Features` (merged if needed)
+- B1: `Overview` (merged across Overview columns B–J)
+- K1: `Features` (merged across all feature columns, if >1)
 
-**Row 2 — Column header row:**
-`Company Name | URL | Location | Headcount | Founded | Product Description | Last Funding | Investors | Key Difference | Category | [feature col 1] | [feature col 2] | ...`
+**Row 2 — Column headers:**
+`Company Name | URL | Location | Headcount | Founded | Product Description | Last Funding | Investors | Key Difference | Category | [Feature 1] | [Feature 2] | …`
 
-**Row 3 — Target startup (always first data row)**
+**Row 3 — Target startup** (always first data row)
 
 **Rows 4+ — Competitors** (Direct first, then Adjacent, then Incumbents)
 
-#### Styling:
-- Header row (row 2): bold, light grey background (`D9D9D9`), thin borders
-- Section header row (row 1): bold, slightly darker grey (`BFBFBF`)
-- Target startup row: light yellow background (`FFFACD`) to highlight it
-- Feature columns: centre-align, use a checkmark-friendly font
-- Freeze top 2 rows
-- Auto-fit column widths (cap at 60 chars)
-- Sheet name: `Tabellenblatt1` (to match existing files)
+#### Styling
+- Row 1 section headers: bold, `BFBFBF` fill
+- Row 2 column headers: bold, `D9D9D9` fill, thin borders, wrap text
+- Row 3 target startup: `FFFACD` (light yellow) fill on all cells
+- Feature cells: centre-aligned
+- Freeze rows 1–2 (freeze pane at A3)
+- Auto-fit column widths, capped at 60 characters
+- Sheet name: `Tabellenblatt1`
 
-#### Python script template:
+#### Python script template
 
 ```python
 import openpyxl
@@ -115,113 +181,131 @@ wb = openpyxl.Workbook()
 ws = wb.active
 ws.title = "Tabellenblatt1"
 
-# --- data ---
-startup_name = "..."
-feature_cols = [...]  # list of feature dimension names
+# --- populate these from your research ---
+feature_cols = [...]   # list of feature dimension names
 companies = [
     {
-        "name": "...", "url": "...", "location": "...", "headcount": ...,
-        "founded": ..., "description": "...", "funding": "...",
-        "investors": "...", "key_diff": "...", "category": "...",
+        "name": "...", "url": "...", "location": "...",
+        "headcount": ..., "founded": ..., "description": "...",
+        "funding": "...", "investors": "...", "key_diff": "...",
+        "category": "...",
         "features": {"Feature 1": "x", "Feature 2": None, ...}
     },
-    # ... more companies
+    # ... remaining companies
 ]
 
-overview_cols = ["Company Name","URL","Location","Headcount","Founded",
-                 "Product Description","Last Funding","Investors","Key Difference","Category"]
+overview_cols = [
+    "Company Name", "URL", "Location", "Headcount", "Founded",
+    "Product Description", "Last Funding", "Investors", "Key Difference", "Category"
+]
 all_cols = overview_cols + feature_cols
-n_overview = len(overview_cols)
-n_feature = len(feature_cols)
-total_cols = len(all_cols)
+n_ov = len(overview_cols)
+n_ft = len(feature_cols)
+total = len(all_cols)
 
 # Row 1: section headers
-ws.cell(1, 1, None)
-ws.cell(1, 2, "Overview")
-ws.merge_cells(start_row=1, start_column=2, end_row=1, end_column=n_overview)
-if n_feature > 0:
-    ws.cell(1, n_overview + 1, "Features")
-    if n_feature > 1:
-        ws.merge_cells(start_row=1, start_column=n_overview+1, end_row=1, end_column=total_cols)
+ws.cell(1, 2).value = "Overview"
+ws.cell(1, 2).font = Font(bold=True)
+ws.cell(1, 2).fill = PatternFill("solid", fgColor="BFBFBF")
+ws.merge_cells(start_row=1, start_column=2, end_row=1, end_column=n_ov)
+if n_ft > 0:
+    ws.cell(1, n_ov + 1).value = "Features"
+    ws.cell(1, n_ov + 1).font = Font(bold=True)
+    ws.cell(1, n_ov + 1).fill = PatternFill("solid", fgColor="BFBFBF")
+    if n_ft > 1:
+        ws.merge_cells(start_row=1, start_column=n_ov+1, end_row=1, end_column=total)
 
 # Row 2: column headers
-for col_idx, col_name in enumerate(all_cols, start=1):
-    cell = ws.cell(2, col_idx, col_name)
-    cell.font = Font(bold=True)
-    cell.fill = PatternFill("solid", fgColor="D9D9D9")
-    cell.alignment = Alignment(wrap_text=True, vertical="top")
+thin = Side(style="thin")
+border = Border(left=thin, right=thin, top=thin, bottom=thin)
+for ci, name in enumerate(all_cols, 1):
+    c = ws.cell(2, ci, name)
+    c.font = Font(bold=True)
+    c.fill = PatternFill("solid", fgColor="D9D9D9")
+    c.alignment = Alignment(wrap_text=True, vertical="top")
+    c.border = border
 
 # Data rows
-for row_idx, company in enumerate(companies, start=3):
-    ws.cell(row_idx, 1, company["name"])
-    ws.cell(row_idx, 2, company["url"])
-    ws.cell(row_idx, 3, company["location"])
-    ws.cell(row_idx, 4, company["headcount"])
-    ws.cell(row_idx, 5, company["founded"])
-    ws.cell(row_idx, 6, company["description"])
-    ws.cell(row_idx, 7, company["funding"])
-    ws.cell(row_idx, 8, company["investors"])
-    ws.cell(row_idx, 9, company["key_diff"])
-    ws.cell(row_idx, 10, company["category"])
-    for feat_idx, feat_name in enumerate(feature_cols, start=n_overview+1):
-        ws.cell(row_idx, feat_idx, company["features"].get(feat_name))
-    # Highlight target startup row
-    if row_idx == 3:
-        for col_idx in range(1, total_cols + 1):
-            ws.cell(row_idx, col_idx).fill = PatternFill("solid", fgColor="FFFACD")
+for ri, co in enumerate(companies, 3):
+    vals = [co["name"], co["url"], co["location"], co["headcount"], co["founded"],
+            co["description"], co["funding"], co["investors"], co["key_diff"], co["category"]]
+    for ci, v in enumerate(vals, 1):
+        ws.cell(ri, ci, v)
+    for fi, fname in enumerate(feature_cols, n_ov + 1):
+        c = ws.cell(ri, fi, co["features"].get(fname))
+        c.alignment = Alignment(horizontal="center")
+    if ri == 3:  # target startup highlight
+        for ci in range(1, total + 1):
+            ws.cell(ri, ci).fill = PatternFill("solid", fgColor="FFFACD")
 
-# Auto-fit column widths
-for col_idx in range(1, total_cols + 1):
-    max_len = 0
-    for row in ws.iter_rows(min_col=col_idx, max_col=col_idx):
-        for cell in row:
-            if cell.value:
-                max_len = max(max_len, len(str(cell.value)))
-    ws.column_dimensions[get_column_letter(col_idx)].width = min(max_len + 2, 60)
+# Column widths
+for ci in range(1, total + 1):
+    maxw = max(
+        (len(str(ws.cell(r, ci).value)) for r in range(1, ws.max_row + 1) if ws.cell(r, ci).value),
+        default=8
+    )
+    ws.column_dimensions[get_column_letter(ci)].width = min(maxw + 2, 60)
 
-# Freeze top 2 rows
 ws.freeze_panes = "A3"
 
-output_path = "..."
+output_path = "..."   # fill in
 wb.save(output_path)
 print(f"Saved: {output_path}")
 ```
 
-Fill in all the data variables with the actual research, then execute the script.
+Fill all data variables with real research, then execute with `Bash`.
 
-### 7. Verify the file
+---
 
-After running the script, verify it was created:
+### Step 8 — Verify the output
+
 ```bash
 ls -lh <output_path>
-python3 -c "import openpyxl; wb=openpyxl.load_workbook('<output_path>'); ws=wb.active; print(f'{ws.max_row} rows x {ws.max_column} cols')"
+python3 -c "
+import openpyxl
+wb = openpyxl.load_workbook('<output_path>')
+ws = wb.active
+print(f'{ws.max_row} rows x {ws.max_column} cols — OK')
+"
 ```
 
-### 8. Commit and push
+---
 
-Stage and commit the generated Excel file on the current branch:
+### Step 9 — Commit and push
+
 ```bash
 git add <output_path>
 git commit -m "Add competitor overview: <Startup Name>"
 git push -u origin <current-branch>
 ```
 
-## Output to user
+---
 
-When done, report:
+## Report to user when done
+
 - File path and size
-- Number of competitors included
+- Number of competitors included (broken down by tier: Direct / Adjacent / Incumbent)
 - Feature dimensions used
-- Git commit reference (short hash)
-- Any companies where data was unavailable / estimated
+- Which internal sources contributed (Affinity notes, Granola meetings, emails, Drive files) — list specific documents or meeting titles where useful
+- Git commit short hash
+- Any companies where data was unavailable or estimated
+
+---
+
+## Data format rules
+
+| Field | Format |
+|-------|--------|
+| Location | ISO-2 country code (e.g. `GE`, `US`, `UK`, `FR`) |
+| Headcount | Number only, no string (`45` not `"~45"`) |
+| Founded | Numeric year (`2021` not `"2021"`) |
+| Last Funding | `$Xm\nRound Year` · `Acquired` · `Incumbent` · `N/A` |
+| Key Difference | How competitor differs *from target startup*, ≤200 chars |
+| Feature marks | `x` confirmed · `(x)` partial · blank unknown/absent |
 
 ## Important notes
 
-- The target startup is always row 3 (first data row). This is the baseline for Key Difference comparisons.
-- Key Difference = how each competitor differs FROM the target startup, not a generic description.
-- Funding format must match: `$12M\nSeries A 2024`. For incumbents write `Incumbent`. For acquired write `Acquired`. For unknown write `N/A`.
-- Location = 2-letter ISO country code (e.g. `GE` for Germany, `US`, `UK`, `FR`).
-- Headcount = numeric value only (e.g. `45`), not a string.
-- Founded = numeric year (e.g. `2021`), not a string.
-- Do not fabricate data. Mark unknown fields as `None` / blank rather than guessing.
-- If `openpyxl` is not installed, run `pip install openpyxl` first.
+- Target startup is always row 3 (first data row) — the baseline for all Key Difference comparisons.
+- Internal sources (Affinity notes, Granola founder call quotes, email threads, Drive memos) enrich Key Difference and feature scores — use them.
+- Do not fabricate data. Unknown = blank. This is a DD document — accuracy over completeness.
+- If a company appears in both internal and external sources and data conflicts, note the discrepancy in Key Difference or a comment cell.
