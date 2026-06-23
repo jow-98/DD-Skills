@@ -1,6 +1,6 @@
 ---
 name: startup-screening
-description: Three-phase startup screening for early-stage DD. Phase 1 — GO/NO-GO scorecard (9 dimensions: problem, market, timing, moat, unit economics, founder-market fit, feasibility, GTM, risk). Phase 2 — Fundamentals evaluation (market sizing, unit economics, competitive position, team). Phase 3 — Business case (KPI framework, financial model inputs, investment thesis). Use for pre-seed through Series A. Run Phase 1 first; only proceed to Phase 2 if score is CONDITIONAL or GO.
+description: "Three-phase startup screening for early-stage DD. Phase 1 — GO/NO-GO scorecard (9 dimensions: problem, market, timing, moat, unit economics, founder-market fit, feasibility, GTM, risk). Phase 2 — Fundamentals evaluation (market sizing, unit economics, competitive position, team). Phase 3 — Business case (KPI framework, financial model inputs, investment thesis). Use for pre-seed through Series A. Run Phase 1 first; only proceed to Phase 2 if score is CONDITIONAL or GO."
 ---
 
 # Startup Screening
