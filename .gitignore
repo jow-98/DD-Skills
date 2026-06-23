@@ -1,0 +1,4 @@
+# Generated output files — download directly from Claude, don't commit
+*.xlsx
+*.csv
+*.pdf

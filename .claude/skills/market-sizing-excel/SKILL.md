@@ -440,7 +440,7 @@ print(f"Saved: {output_path}")
 
 Fill all data variables with actual research results, then execute.
 
-### 8. Verify the file
+### 8. Verify and send the file
 
 ```bash
 ls -lh <output_path>
@@ -453,13 +453,9 @@ for name in wb.sheetnames:
 "
 ```
 
-### 9. Commit and push
+Then send the file to the user using the `SendUserFile` tool so they can download it directly from Claude.
 
-```bash
-git add <output_path>
-git commit -m "Add market sizing: <Startup Name>"
-git push -u origin <current-branch>
-```
+Do **not** commit or push the generated `.xlsx` file — it is a per-deal output, not part of the skills repo.
 
 ## Output to user
 

@@ -160,6 +160,7 @@ Priority order for ACV inputs:
    - **SaaStr** — search `saastr average contract value [category] [year]`
    - **Tomasz Tunguz benchmarks** — search `tomtunguz.com ACV [category]`
    - **Competitor pricing inference** — find 2–3 direct competitors' public pricing pages or press releases mentioning deal sizes; infer ACV range
+6. **Category SaaS benchmarks** — search `<category> SaaS average contract value benchmark`
 
 If sources conflict (e.g. founder claims higher ACV than experts suggest is achievable), model both as separate scenarios and flag the divergence explicitly.
 
@@ -241,6 +242,7 @@ Note what could expand the market (e.g. APAC, SMB segment, adjacent verticals no
 ```markdown
 # Market Sizing: [Startup Name]
 _Generated [date] · Bottom-up methodology · Sources: Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, web search_
+_Generated [date] · Bottom-up methodology · Sources: Granola, Superhuman, Google Drive, Specter, web search_
 
 ## 0. Internal DD Context
 _What we already know from the pipeline — meetings, emails, decks, expert calls_
