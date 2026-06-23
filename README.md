@@ -19,6 +19,7 @@ A curated library of Claude AI skills for venture capital due diligence and inve
 | `pmf-assessment` | PMF evaluation combining Sean Ellis 40% test, Superhuman PMF engine, retention curve analysis, and Lenny's 46-leader framework (reference customer counts, segment-level fit, pull signals, multi-stage PMF). | Framework + diagnostics |
 | `startup-screening` | Three-phase DD screen: Phase 1 = 9-dimension GO/NO-GO scorecard; Phase 2 = fundamentals (market sizing, unit economics, competitive position, team); Phase 3 = business case (KPI framework, return scenarios, investment thesis). | Structured memo |
 | `sector-research` | Two-layer market context: Layer 1 = sector/industry brief (TAM, trends, players, whitespace); Layer 2 = macro environment (indices, VIX, risk-on/off, sector rotation, investment climate). | Brief + macro snapshot |
+| `investment-memo` | Generate a 42CAP Investment Memo in Word (.docx) format. Pulls from Affinity (deal details, notes), Granola (founder/reference/expert call transcripts), Specter (company profile, team, competitors), Google Drive (financial model, cap table, tech DD), and Superhuman (email threads). Matches the 42CAP template exactly: cover table, Investment Criteria, Solution, Market & Competition, ESG, Financials, Funding, Team. | `.docx` file |
 
 ## Supporting Skills
 
@@ -53,4 +54,5 @@ Skills are invoked with `/skill-name` in a Claude Code session, or Claude will t
 2. If GO: `/market-sizing-excel <Company>` + `/competitive-analysis-excel <Company>`
 3. `/sector-research <vertical>` for macro context and timing
 4. `/pmf-assessment` to evaluate product-market fit signals
+5. `/investment-memo <Company>` — generate the final Word memo for IC
 
