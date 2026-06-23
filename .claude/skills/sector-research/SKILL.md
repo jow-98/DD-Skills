@@ -1,6 +1,6 @@
 ---
 name: sector-research
-description: Two-layer market context tool for DD. Layer 1 — Sector/Industry Research: TAM/SAM/SOM, trends, drivers, competitive landscape, and founder-level market brief for a specific vertical. Layer 2 — Market Environment Analysis: macro backdrop, global indices, risk-on/risk-off, sector rotation, and investment climate. Use when covering a new vertical, assessing market timing, or building thesis context.
+description: "Two-layer market context tool for DD. Layer 1 — Sector/Industry Research: TAM/SAM/SOM, trends, drivers, competitive landscape, and founder-level market brief for a specific vertical. Layer 2 — Market Environment Analysis: macro backdrop, global indices, risk-on/risk-off, sector rotation, and investment climate. Use when covering a new vertical, assessing market timing, or building thesis context."
 ---
 
 # Sector Research & Market Environment Analysis
