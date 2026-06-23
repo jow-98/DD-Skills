@@ -255,21 +255,16 @@ for scenario in scenarios:
     write_header_row(ws1, current_row, headers)
     current_row += 1
 
-    total_tam = 0
-    total_sam = 0
+    first_data_row = current_row
     for r in scenario["regions"]:
-        tam = r["count"] * r["acv"] * r["icp_fit_pct"]
-        sam = tam * r["market_share_pct"]
-        total_tam += tam
-        total_sam += sam
         row_data = [
             r["name"],
             r["count"],
             r["acv"],
             r["icp_fit_pct"],
-            round(tam),
+            None,  # TAM — formula written below
             r["market_share_pct"],
-            round(sam),
+            None,  # SAM — formula written below
             r["source"],
         ]
         for col, val in enumerate(row_data, 1):
@@ -281,10 +276,21 @@ for scenario in scenarios:
                 cell.number_format = "0%"
             if col in (5, 7):  # currency
                 cell.number_format = '#,##0 "€"'
+        # TAM formula: =B*C*D  (count × ACV × ICP fit %)
+        tam_cell = ws1.cell(current_row, 5)
+        tam_cell.value = f"=B{current_row}*C{current_row}*D{current_row}"
+        tam_cell.number_format = '#,##0 "€"'
+        tam_cell.border = border
+        # SAM formula: =E*F  (TAM × market share %)
+        sam_cell = ws1.cell(current_row, 7)
+        sam_cell.value = f"=E{current_row}*F{current_row}"
+        sam_cell.number_format = '#,##0 "€"'
+        sam_cell.border = border
         current_row += 1
 
-    # Total row
-    total_row_data = ["Total", "", "", "", round(total_tam), "", round(total_sam), ""]
+    last_data_row = current_row - 1
+    # Total row — SUM formulas so totals recalculate when inputs change
+    total_row_data = ["Total", "", "", "", None, "", None, ""]
     for col, val in enumerate(total_row_data, 1):
         cell = ws1.cell(current_row, col, val)
         cell.font = Font(bold=True)
@@ -292,6 +298,16 @@ for scenario in scenarios:
         cell.border = border
         if col in (5, 7):
             cell.number_format = '#,##0 "€"'
+    ws1.cell(current_row, 5).value = f"=SUM(E{first_data_row}:E{last_data_row})"
+    ws1.cell(current_row, 5).number_format = '#,##0 "€"'
+    ws1.cell(current_row, 5).font = Font(bold=True)
+    ws1.cell(current_row, 5).fill = blue_fill
+    ws1.cell(current_row, 5).border = border
+    ws1.cell(current_row, 7).value = f"=SUM(G{first_data_row}:G{last_data_row})"
+    ws1.cell(current_row, 7).number_format = '#,##0 "€"'
+    ws1.cell(current_row, 7).font = Font(bold=True)
+    ws1.cell(current_row, 7).fill = blue_fill
+    ws1.cell(current_row, 7).border = border
     current_row += 2  # blank row between scenarios
 
 # Notes block
