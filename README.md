@@ -6,66 +6,54 @@ A curated library of Claude AI skills for venture capital due diligence and inve
 
 ```
 .claude/skills/              ← Claude loads skills from here
-├── pmf-assessment/
-├── measuring-pmf-lenny/
-├── startup-idea-validation/
-├── market-sizing/
-├── market-sizing-analysis/
-├── market-sizing-excel/
-├── competitive-analysis/
-├── competitive-analysis-excel/
-├── competitive-landscape/
-├── competitive-intelligence-playbook/
-├── sector-research/
-├── market-environment-analysis/
-├── marketing-competitive-analysis/
-├── business-analyst/
-└── startup-analyst/
-
-noways__Competitor_Overview.xlsx   ← Example DD output
 ```
 
-## Skills
+## Core Skills (use these first)
 
-### Product-Market Fit
+| Skill | What it does | Output |
+|-------|-------------|--------|
+| `competitive-analysis` | Full DD competitive landscape: pulls from Affinity, Granola (AlphaSight), Superhuman, Specter, Evertrace, Drive + web. Includes Porter's Five Forces, SWOT, positioning map, and marketing/GTM battlecards. | Markdown report |
+| `competitive-analysis-excel` | Same research as above, produces `.xlsx` with 3 tabs: competitor overview, strategic frameworks (Porter's/SWOT/positioning map), and marketing intel (messaging matrix, channel coverage). | `.xlsx` file |
+| `market-sizing` | Bottom-up TAM/SAM/SOM via Specter + web. Includes optional value theory methodology (willingness-to-pay) for new categories. Top-down sanity check included. | Markdown report |
+| `market-sizing-excel` | Same as above, produces `.xlsx` with 3 sheets: Bottom-Up (scenario blocks), Top-Down (validation), optional Value-Theory. | `.xlsx` file |
+| `pmf-assessment` | PMF evaluation combining Sean Ellis 40% test, Superhuman PMF engine, retention curve analysis, and Lenny's 46-leader framework (reference customer counts, segment-level fit, pull signals, multi-stage PMF). | Framework + diagnostics |
+| `startup-screening` | Three-phase DD screen: Phase 1 = 9-dimension GO/NO-GO scorecard; Phase 2 = fundamentals (market sizing, unit economics, competitive position, team); Phase 3 = business case (KPI framework, return scenarios, investment thesis). | Structured memo |
+| `sector-research` | Two-layer market context: Layer 1 = sector/industry brief (TAM, trends, players, whitespace); Layer 2 = macro environment (indices, VIX, risk-on/off, sector rotation, investment climate). | Brief + macro snapshot |
 
-| Skill | What it does |
-|-------|-------------|
-| `pmf-assessment` | Sean Ellis 40% test + Superhuman PMF engine. Includes retention curve analysis, survey templates, PMF stage guides, and case studies. |
-| `measuring-pmf-lenny` | PMF framework distilled from 46 product leaders. Covers disappointment surveys, retention curves, reference customer counts, and segment-level fit. |
-
-### Due Diligence
-
-| Skill | What it does |
-|-------|-------------|
-| `startup-idea-validation` | 9-dimension GO/NO-GO scorecard: problem severity, market size, defensibility, founder-market fit, feasibility, GTM, and risk. |
-| `startup-analyst` | Startup evaluation framework for investment screening and DD — market opportunity, unit economics, team, metrics. |
-| `business-analyst` | Business analysis framework for evaluating startup fundamentals and KPI dashboards. |
-
-### Market Research
+## Supporting Skills
 
 | Skill | What it does |
 |-------|-------------|
-| `market-sizing` | TAM/SAM/SOM — core market sizing skill (built-in). |
-| `market-sizing-excel` | Generates Excel market sizing output (built-in). |
-| `market-sizing-analysis` | TAM/SAM/SOM via top-down, bottom-up, and value-theory with a SaaS worked example. |
-| `sector-research` | Frameworks for doing sector research from scratch. Useful when covering a new vertical. |
-| `market-environment-analysis` | Macro and industry trend methodology with indicator references. |
+| `competitive-landscape` | Generic framework skill: Porter's Five Forces, Blue Ocean Strategy, positioning maps, competitive monitoring. Use as a reference when working through frameworks manually. |
+| `competitive-intelligence-playbook` | Deep competitive intelligence methodology (SWOT, Porter's, positioning matrix). Thorough structured analysis for when you need a full playbook. |
+| `marketing-competitive-analysis` | Competitive marketing strategy — messaging comparison, content gap analysis, battlecard creation, GTM differentiation. |
+| `market-sizing-analysis` | Generic TAM/SAM/SOM frameworks with top-down, bottom-up, and value theory methodologies. Reference skill for methodology. |
+| `startup-idea-validation` | 9-dimension GO/NO-GO scorecard and validation ladder as a standalone tool (also embedded in `startup-screening` Phase 1). |
 
-### Competitive Analysis
+## Skill Relationships
 
-| Skill | What it does |
-|-------|-------------|
-| `competitive-analysis` | Landscape mapping, feature matrices, win/loss analysis (built-in). |
-| `competitive-analysis-excel` | Generates Excel competitor overview output (built-in). |
-| `competitive-landscape` | Competitive landscape mapping with Porter's Five Forces and positioning. |
-| `competitive-intelligence-playbook` | Deep competitive intelligence methodology — thorough, structured analysis. |
-| `marketing-competitive-analysis` | Competitive marketing strategy — positioning, messaging, GTM differentiation. |
+```
+startup-screening ──Phase 1──► 9-dimension scorecard (startup-idea-validation embedded)
+                 ──Phase 2──► market-sizing + competitive-analysis (abbreviated)
+                 ──Phase 3──► pmf-assessment + KPI framework
+
+competitive-analysis ──────► competitive-analysis-excel (same research, Excel output)
+market-sizing        ──────► market-sizing-excel (same research, Excel output)
+
+sector-research ──Layer 1──► industry brief
+                ──Layer 2──► macro environment + investment climate
+```
 
 ## Usage
 
 Skills are invoked with `/skill-name` in a Claude Code session, or Claude will trigger them automatically based on your request.
 
+**Typical DD workflow:**
+1. `/startup-screening <Company>` — quick GO/NO-GO (Phase 1, 15 min)
+2. If GO: `/market-sizing-excel <Company>` + `/competitive-analysis-excel <Company>`
+3. `/sector-research <vertical>` for macro context and timing
+4. `/pmf-assessment` to evaluate product-market fit signals
+
 ## Sources
 
-Skills sourced from [luisschmitzheadline/VC-Skills.md](https://github.com/luisschmitzheadline/VC-Skills.md) and custom-built for 42cap DD workflows.
+Skills sourced and adapted from [luisschmitzheadline/VC-Skills.md](https://github.com/luisschmitzheadline/VC-Skills.md) and custom-built for 42cap DD workflows.

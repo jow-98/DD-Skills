@@ -99,6 +99,35 @@ Use `WebSearch` to validate the ICP definition if unclear:
 - `"<startup name>" customers case study`
 - `"<startup name>" target market enterprise mid-market`
 
+### 2b. Value Theory (optional — use when creating a new category or if no comparable SaaS pricing exists)
+
+Value theory estimates market size from the economic value the product creates, rather than from customer counts × ACV.
+
+**When to use:**
+- The startup creates a genuinely new category with no direct pricing comparables
+- The startup displaces significant manual labour or existing spend (e.g. replaces a €500k/yr process)
+- Top-down and bottom-up are yielding implausibly wide ranges
+
+**Process:**
+1. **Quantify the problem cost** — what does the customer currently spend (time × FTE cost, third-party fees, error rates × cost) to handle the problem the startup solves?
+   - Search: `"<startup name>" ROI case study` or `<problem category> cost per year survey`
+2. **Estimate % of that cost the startup solves** — be conservative (20–60% typical)
+3. **Estimate willingness-to-pay** — typically 10–30% of value created
+4. **Multiply by the addressable customer base** (from Step 2 ICP)
+
+```
+Value per customer       = Problem cost × % solved by product
+Price per customer (ACV) = Value × WTP % (10–30%)
+TAM                      = Total ICP customers × ACV
+SAM / SOM                = apply same ICP Fit % and Market Share % from Step 3–5
+```
+
+**Output:** One additional row in the assumptions table and one ACV scenario in the TAM/SAM table labelled "Value Theory ACV".
+
+Cross-check: value-theory ACV vs. bottom-up ACV should be within 2–3×. Large divergence = either the product captures too little value (pricing risk) or the problem isn't as costly as assumed.
+
+---
+
 ### 3. Count target accounts by region
 
 This is the core of the bottom-up. For each relevant region (typically EU, USA, and any other key geographies):

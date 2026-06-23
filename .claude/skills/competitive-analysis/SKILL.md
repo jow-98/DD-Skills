@@ -165,6 +165,98 @@ Rules:
 
 ---
 
+### Step 7b — Strategic Framework Analysis *(run in parallel with Step 7; include in final output)*
+
+Using evidence already collected in Steps 1–6, produce three sub-analyses. Each is a **separate output section** — do not merge them.
+
+**7b-i. Porter's Five Forces**
+
+Score each force 1–5 (1 = low threat/power, 5 = high). Use internal intel and expert quotes where available to justify scores.
+
+| Force | Score (1–5) | Key Factors | Implication |
+|-------|-------------|-------------|-------------|
+| Threat of New Entrants | | Capital, tech, regulatory barriers; network effects | |
+| Bargaining Power of Suppliers | | Supplier concentration, switching costs, alternatives | |
+| Bargaining Power of Buyers | | Customer concentration, price sensitivity, switching costs | |
+| Threat of Substitutes | | Manual processes, DIY, adjacent tools | |
+| Competitive Rivalry | | # of players, growth rate, differentiation, exit barriers | |
+
+Overall Market Attractiveness: **Attractive / Moderate / Challenging** — 1–2 sentences.
+
+**7b-ii. SWOT (target startup only)**
+
+Draw Strengths/Weaknesses from Step 1 internal intel and Specter data; Opportunities/Threats from Steps 3–6 competitive landscape. 3–5 points per quadrant.
+
+| | Strengths | Weaknesses |
+|---|---|---|
+| **Internal** | [bullet list] | [bullet list + mitigation each] |
+
+| | Opportunities | Threats |
+|---|---|---|
+| **External** | [bullet list + how to capitalize] | [bullet list + likelihood + mitigation] |
+
+**7b-iii. Competitive Positioning Map**
+
+Rate each company (target first, then competitors) on two axes using Step 4 data:
+- **Price** (1 = cheapest, 10 = most expensive)
+- **Feature depth** (1 = minimal/simple, 10 = comprehensive/complex)
+
+| Company | Price (1–10) | Features (1–10) | Tier | Positioning Note |
+|---------|-------------|-----------------|------|-----------------|
+| [Target] ← target | | | | |
+| [Competitor A] | | | Direct | |
+
+White space: [1–2 sentences identifying underserved quadrants or differentiation opportunity]
+
+---
+
+### Step 7c — Marketing & GTM Intelligence *(run in parallel with Step 7; include if GTM data found)*
+
+Analyze how the target and top 3–5 competitors position and market themselves. Pull from product pages, blog/content, job postings, review sites (G2, Capterra), and any Superhuman or Granola intel on GTM strategy.
+
+**7c-i. Messaging Matrix**
+
+| Dimension | [Target] | [Comp A] | [Comp B] | [Comp C] |
+|-----------|---------|---------|---------|---------|
+| Tagline / Headline | | | | |
+| Core value proposition | | | | |
+| Primary audience | | | | |
+| Key differentiator claim | | | | |
+| Tone / Voice | | | | |
+| Proof points used | | | | |
+| Category framing | | | | |
+| Primary CTA | | | | |
+
+**7c-ii. Content & Channel Coverage**
+
+| Channel / Format | [Target] | [Comp A] | [Comp B] | Gap / Opportunity |
+|-----------------|---------|---------|---------|-------------------|
+| Blog / SEO | | | | |
+| Case studies | | | | |
+| Whitepapers / Ebooks | | | | |
+| Webinars / Events | | | | |
+| Video | | | | |
+| G2 / Capterra reviews | | | | |
+| Paid ads | | | | |
+| Community presence | | | | |
+
+Content opportunity: [1–2 sentences on biggest gaps or differentiators to amplify]
+
+**7c-iii. GTM Battlecard Summaries**
+
+For each top 3 competitor:
+
+**[Competitor Name]**
+- **Their pitch**: how they describe themselves; top 3 claimed differentiators
+- **Where they win**: genuine strengths from reviews + expert intel
+- **Where they're vulnerable**: consistent complaints (G2/Capterra, Granola notes)
+- **Landmine questions** to ask prospects that highlight the target startup's advantage:
+  1. …
+  2. …
+  3. …
+
+---
+
 ### Step 8 — Expert Intelligence section (REQUIRED if any expert content found)
 
 This section is mandatory if Step 1 surfaced any AlphaSight calls, expert emails, advisor notes, or reference calls.
@@ -216,6 +308,26 @@ _[date] · Sources: VC Knowledge Hub, Affinity, Granola (AlphaSight + founder ca
 
 ## Whitespace & Moat
 …
+
+## Strategic Framework Analysis
+### Porter's Five Forces
+[scored table + overall attractiveness sentence]
+
+### SWOT — [Target Startup]
+[SWOT table]
+
+### Competitive Positioning Map
+[positioning table + white space insight]
+
+## Marketing & GTM Intelligence
+### Messaging Comparison
+[messaging matrix]
+
+### Content & Channel Coverage
+[coverage table + opportunity summary]
+
+### GTM Battlecards
+[battlecard summary per top 3 competitors]
 
 ## Expert Intelligence   ← mandatory if any expert content found
 [expert blocks]

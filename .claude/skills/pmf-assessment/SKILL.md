@@ -1,6 +1,6 @@
 ---
 name: product-market-fit
-description: Master frameworks for measuring, achieving, and maintaining product-market fit (PMF). Use when validating new products, assessing readiness to scale, diagnosing retention problems, planning market expansion, measuring "very disappointed" score, implementing PMF engines, or determining if you have permission to grow. Covers Sean Ellis survey methodology, Superhuman PMF engine, retention curve analysis, leading/lagging indicators, pre-PMF vs. post-PMF strategies, and maintaining fit as markets evolve.
+description: Master frameworks for measuring, achieving, and maintaining product-market fit (PMF). Use when validating new products, assessing readiness to scale, diagnosing retention problems, planning market expansion, measuring "very disappointed" score, implementing PMF engines, or determining if you have permission to grow. Covers Sean Ellis 40% test, Superhuman PMF engine, retention curve analysis, leading/lagging indicators, pre-PMF vs. post-PMF strategies, Lenny's 46-leader principles (reference customer counts, segment-level fit, pull signals, multi-stage PMF), and maintaining fit as markets evolve.
 ---
 
 # Product-Market Fit
@@ -449,6 +449,81 @@ Learn from real-world PMF journeys:
 - Metrics and timelines
 - Key lessons from each
 - What worked and what didn't
+
+---
+
+## Lenny's Framework: Signals from 46 Product Leaders
+
+Distilled from Lenny Rachitsky's research across 46 experienced product leaders. Use these principles to contextualize and triangulate the quantitative metrics above.
+
+### Core Principles
+
+**PMF is obvious when you have it**
+> *"If there's doubt, you likely don't have it."* — Matt MacInnis
+
+Authentic PMF feels unmistakable: the market actively pulls the product from you. If you need to persuade every customer, you don't have it yet.
+
+**Retention is the ultimate single metric**
+> *"Product market fit has one metric. Retention."* — Uri Levine
+
+Retention curves that flatten — especially a "smile curve" where engagement rises over time — are the strongest structural signal. Before retention data matures, the Sean Ellis 40% test is the leading proxy.
+
+**PMF is not static — it can be lost**
+> *"You might fall out of product market fit in a year or five years if you're not continually making your product better."* — Casey Winters
+
+Markets shift, competitors improve, technology evolves. Re-survey quarterly and watch for declining scores.
+
+**Reference customers validate PMF**
+> *"I want 6–8 references for B2B, 15–25 for B2C as an indication of PMF."* — Christian Idiodi
+
+Customers willing to advocate publicly — not just use the product — demonstrate genuine conviction. Build a reference customer pipeline before claiming PMF.
+
+**PMF exists in segments, not universally**
+> *"Do we have the fit in specific segments?"* — Karri Saarinen
+
+Find your strongest fit in one segment first, measure PMF score per segment, then expand. Aggregate scores can mask deep fit in a beachhead alongside no fit elsewhere.
+
+**PMF requires distribution, not just retention**
+> *"If you have a product that retains well and you can't find more users for it, I don't think that's product market fit."* — Casey Winters
+
+Both retention and a scalable, repeatable acquisition channel are required before claiming PMF. Retention without growth is product-channel fit, not market fit.
+
+**PMF is multi-stage, not binary** (Todd Jackson's 4 levels)
+
+| Stage | Customer Count | Priority |
+|-------|---------------|----------|
+| Nascent | 3–5 | Satisfaction |
+| Developing | 5–25 | Demand |
+| Strong | 25–100 | Efficiency |
+| Extreme | 100+ | Scale |
+
+**Customer "pull" signals**
+> *"We felt the questions change — 'How are you pricing this? When can we start a POV?' That's real intent."* — Raaz Herzberg
+
+Watch for customers driving the next steps: asking about pricing, timelines, and integration. Polite interest ≠ pull.
+
+**Outrage during outages signals PMF**
+> *"If customers weren't furious during downtime, that signals no product market fit."* — Jeff Weinstein
+
+Mission-critical products generate strong reactions when unavailable. If customers shrug at downtime, the product is nice-to-have.
+
+### Diagnostic Questions (Lenny's Framework)
+
+Use these in customer interviews and reference calls to triangulate PMF beyond the survey score:
+
+1. "If you could no longer use this product, how would you work around it?" *(low effort = no PMF)*
+2. "Have you recommended this to a colleague? Why / why not?"
+3. "What would you lose if this went away tomorrow?"
+4. "When did you last use it — and what triggered that session?"
+5. "Is there a segment of your team or workflow where this is truly indispensable?"
+
+### Common PMF Mistakes (from 46 leaders)
+
+- **Confusing launch spikes with PMF** — Product Hunt traffic or press coverage doesn't mean PMF. Look for sustained organic growth post-launch.
+- **Listening to "somewhat disappointed" users** — Focus on what makes the "very disappointed" segment love the product, not what would make lukewarm users slightly happier.
+- **Scaling too early** — Paid growth before PMF burns cash and can damage brand reputation with the wrong-fit customers you acquire.
+- **Conflating TAM with PMF** — A large market opportunity says nothing about whether you have fit within it.
+- **Ignoring segment-level retention** — Aggregate retention can look acceptable while a small "champion" segment carries the whole cohort.
 
 ---
 
