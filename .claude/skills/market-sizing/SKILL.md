@@ -20,6 +20,59 @@ The user may optionally provide extra context in the args, e.g.:
 
 Work through each step in order. Keep the user updated with one-line status messages.
 
+### 0. Gather all internal DD context first
+
+Before doing any external research, pull everything already in the pipeline about this startup. Run all of these in parallel:
+
+**Granola — meeting notes & expert calls:**
+Use `mcp__Granola__query_granola_meetings` with the startup name to find all recorded meetings (founder calls, expert calls, partner discussions). For each result call `mcp__Granola__get_meeting_transcript` to get the full transcript.
+Extract and cache:
+- Any ICP descriptions the founders or experts gave
+- Willingness-to-pay signals (specific price points mentioned, budget ranges, buyer personas)
+- Market size numbers the founders claimed (their own TAM/SAM assumptions)
+- Customer names or segments mentioned
+- Any expert pushback on market assumptions
+
+**Superhuman — email threads:**
+Use `mcp__Superhuman__query_email_and_calendar` with the startup name to find all relevant email threads.
+Also search for related terms: `"<startup name>" Alphasights`, `"<startup name>" expert`, `"<startup name>" customer`.
+Extract and cache:
+- Alphasights / expert network briefs sent or received — these contain ICP definitions and willingness-to-pay data
+- Any founder emails describing their pricing model or customer pipeline
+- Expert replies with market commentary or competitor callouts
+- Any forwarded decks or attachments referenced
+
+**Google Drive — decks and documents:**
+Use `mcp__Google_Drive__search_files` with the startup name to find pitch decks, market sizing docs, or DD memos already on file.
+For each relevant file call `mcp__Google_Drive__read_file_content` or `mcp__Google_Drive__download_file_content`.
+Extract and cache:
+- The startup's own TAM/SAM/SOM figures and methodology
+- Any pricing slides (ACV, pricing tiers, take-rate assumptions)
+- ICP slides (customer profile, target company size, industries)
+- Any market research slides with cited sources
+
+**Affinity — CRM notes:**
+Use `mcp__Affinity__search_companies` with the startup name to find the company in the CRM.
+Then call `mcp__Affinity__get_notes_for_entity` and `mcp__Affinity__get_meetings_for_entity` to retrieve all notes and meeting logs.
+Extract: any ICP, pricing, or market size commentary logged by the team.
+
+**Evertrace — company signals & discovery:**
+Use `mcp__Evertrace__search_companies` with the startup name and relevant ICP keywords to find:
+- Similar companies or competitors that have been screened/tracked
+- Market signal data (funding events, growth signals) that imply market size or ICP validation
+- Company counts within a defined segment (cross-check against Eurostat/Census counts)
+Also call `mcp__Evertrace__get_signals_metadata` to understand available signal types for this market.
+
+**Synthesise internal context:**
+After gathering all internal data, compile a "known facts" summary:
+- Confirmed ICP (from founders, experts, or Alphasights briefs)
+- Confirmed or signalled ACV / pricing (from deck, emails, expert calls)
+- Founder's own market size claim (to compare with your model)
+- Any willingness-to-pay data from expert calls or customer conversations
+- Flag any contradictions between sources (e.g. founder claims $500K ACV but expert says $100K is the ceiling)
+
+Use this internal context to anchor the model. Only use web research to fill gaps or validate numbers that are absent from internal sources.
+
 ### 1. Resolve the target company
 
 Use `mcp__Specter__find_company` with the startup name or URL.
@@ -53,35 +106,64 @@ This is the core of the bottom-up. For each relevant region (typically EU, USA, 
 a. Find the total universe of companies matching the ICP size/industry criteria.
    Use `WebSearch` with queries like:
    - `number of [industry] companies [region] >250 employees eurostat`
-   - `number of [industry] enterprises [region] statistics`
-   - `[industry] company count [region] site:eurostat.eu OR site:census.gov OR site:statista.com`
+   - `[NACE/NAICS code] enterprises [region] size class statistics`
+   - `[industry] company count [region] site:eurostat.eu OR site:census.gov`
 
-   Preferred authoritative sources (in order):
-   - EU: Eurostat (eurostat.eu) — search structural business statistics by NACE code
-   - USA: Census Bureau (census.gov) — County Business Patterns, or NAM for manufacturing
-   - Global: World Bank, OECD, industry trade associations
-   - Fallback: Statista, IBISWorld, industry reports
+   **Authoritative sources — company counts (use in priority order):**
 
-b. Apply an ICP fit % — the fraction of those companies that truly match (right size tier, right use case pain, right buying readiness). Be conservative. Typical range: 20–50%. Document your reasoning.
+   *EU:*
+   - **Eurostat Structural Business Statistics** (`ec.europa.eu/eurostat/web/structural-business-statistics`) — filter by NACE code + size class. Most granular EU source.
+   - **Bureau van Dijk / Orbis** (`bvdinfo.com`) — pan-European company database; ~500M companies. Best for precise NACE + revenue filters.
+   - **Amadeus database** (`amadeus.bvdinfo.com`) — EU-focused; search `amadeus database [industry] [country] enterprise count` for cited figures in papers/reports.
+
+   *USA:*
+   - **US Census Bureau County Business Patterns (CBP)** (`census.gov/programs-surveys/cbp.html`) — NAICS code + employee size band. Gold standard.
+   - **US Census Bureau Statistics of US Businesses (SUSB)** (`census.gov/programs-surveys/susb.html`) — alternative; use for revenue-based filters.
+   - **NAM Manufacturers' Outlook** (`nam.org`) — for manufacturing ICP specifically.
+
+   *UK:*
+   - **ONS Business Population Estimates** (`ons.gov.uk`) — annual; filter by SIC code and employee band.
+
+   *Global / cross-country:*
+   - **World Bank Enterprise Surveys** (`enterprisesurveys.worldbank.org`) — emerging markets.
+   - **OECD Structural and Demographic Business Statistics** (`stats.oecd.org`) — cross-country by industry and size.
+   - **Dealroom** — good for tech/startup ecosystem counts and EU company discovery.
+   - **PitchBook** — use for VC-backed company counts within a segment.
+   - **Dun & Bradstreet / Hoovers** (`dnb.com`) — broad commercial database; useful fallback.
+
+   *Sector-specific trade associations (prefer these over generic databases when available):*
+   - Financial services: EBF (European Banking Federation), ABA (American Bankers Assoc.)
+   - Insurance: Insurance Europe, ACLI
+   - Telecom: ETNO, CTIA, GSMA
+   - Manufacturing: Eurofer, NAM, VDA
+   - Retail: EuroCommerce, NRF
+   - Logistics: ECG, GS1
+
+b. Apply an ICP fit % — the fraction of those companies that truly match (right size tier, right use case pain, right buying readiness). Typical range: 20–50%. Document your reasoning.
 
 c. Record the source URL for each company count.
 
 ### 4. Determine ACV (Annual Contract Value)
 
-Estimate the expected ACV per customer. Use:
-- Any public pricing the startup has disclosed
-- Comparable SaaS pricing benchmarks for the category
-- Per-unit economics (e.g. price × typical usage volume)
-- Investor materials / pitch deck data if provided
+Use internal DD context first (Step 0), then fill gaps with external research.
 
-If pricing has multiple tiers or scenarios, model 2–3 scenarios (e.g. Entry / Mid / Enterprise ACV).
+Priority order for ACV inputs:
+1. **Expert call transcripts** (Granola) — willingness-to-pay signals from customers or industry experts are the strongest signal
+2. **Alphasights / expert network briefs** (Superhuman) — often contain explicit budget range data from practitioners
+3. **Startup's own pitch deck** (Google Drive) — founder's claimed ACV or pricing model
+4. **Founder emails / CRM notes** (Superhuman / Affinity) — pricing discussed in context
+5. **Public pricing pages** — search `"<startup name>" pricing`
+6. **Category SaaS benchmarks** — search these in order:
+   - **OpenView SaaS Benchmarks** (`openviewpartners.com/reports`) — ACV by ARR band and GTM motion
+   - **KeyBanc Capital Markets SaaS Survey** — search `keybanc saas survey [year] average contract value`
+   - **Bessemer Cloud Index / State of the Cloud** (`bvp.com/atlas/state-of-the-cloud`)
+   - **SaaStr** — search `saastr average contract value [category] [year]`
+   - **Tomasz Tunguz benchmarks** — search `tomtunguz.com ACV [category]`
+   - **Competitor pricing inference** — find 2–3 direct competitors' public pricing pages or press releases mentioning deal sizes; infer ACV range
 
-Search for benchmarks:
-- `"<startup name>" pricing`
-- `<category> SaaS average contract value benchmark`
-- `<comparable company> ARR per customer`
+If sources conflict (e.g. founder claims higher ACV than experts suggest is achievable), model both as separate scenarios and flag the divergence explicitly.
 
-Always cite the source or reasoning for the ACV figure.
+Always cite the source or reasoning for every ACV figure used.
 
 ### 5. Calculate TAM, SAM, SOM
 
@@ -112,9 +194,33 @@ Calculate:
 
 ### 7. Top-down sanity check
 
-Find 1–2 top-down market size reports for the broader category:
-- Search: `<category> total addressable market size 2024 2025 billion`
-- Sources: Gartner, IDC, Grand View Research, MarketsandMarkets, Statista
+Aim for **3–5 independent top-down references** across at least two source tiers. Search:
+- `<category> total addressable market 2025 2030 billion forecast`
+- `<category> market size CAGR site:gartner.com OR site:idc.com OR site:forrester.com`
+- `<category> market report Grand View Research OR MarketsandMarkets OR Mordor Intelligence`
+
+**Source tiers:**
+
+*Tier 1 — Analyst firms (most credible):*
+- **Gartner** (`gartner.com/en/newsroom`) — free press releases with headline forecast numbers
+- **IDC** — search `IDC worldwide [category] forecast [year]`
+- **Forrester** — search `forrester [category] market size [year]`
+- **McKinsey Global Institute** (`mckinsey.com/mgi`) — industry deep-dives
+
+*Tier 2 — Market research publishers:*
+- Grand View Research, MarketsandMarkets, Mordor Intelligence, Precedence Research, Straits Research, IMARC Group
+
+*Tier 3 — Investment & ecosystem reports:*
+- **a16z** (`a16z.com`) — annual state-of-market reports for key tech verticals
+- **Bessemer / BVP Atlas** (`bvp.com/atlas`) — cloud and SaaS markets
+- **Dealroom State of European Tech** (`dealroom.co/reports`) — EU market sizes
+- **CB Insights** (`cbinsights.com/research`) — market maps and sizing
+- **PitchBook-NVCA Venture Monitor** — sector investment data implies market scale
+
+*Tier 4 — Industry bodies (for regulated / traditional industries):*
+BIS, EBA/ECB (fintech/banking), GSMA Intelligence (telecoms), IEA/Eurostat (energy), WHO/EMA (healthcare)
+
+Always fetch and read the actual source page — do not cite a number you have not verified. Record: market name, current size, forecast year + size, CAGR, exact URL.
 
 Compare the bottom-up SAM to what the top-down implies. Note whether the bottom-up is conservative, aligned, or aggressive vs. top-down. Explain any large divergence.
 
@@ -134,7 +240,19 @@ Note what could expand the market (e.g. APAC, SMB segment, adjacent verticals no
 
 ```markdown
 # Market Sizing: [Startup Name]
-_Generated [date] · Bottom-up methodology · Sources cited inline_
+_Generated [date] · Bottom-up methodology · Sources: Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, web search_
+
+## 0. Internal DD Context
+_What we already know from the pipeline — meetings, emails, decks, expert calls_
+
+| Source | Key Finding | Implication for Model |
+|---|---|---|
+| Granola – [meeting/date] | [e.g. "Founder: ACV €400–600K mid-market"] | Used as ACV anchor for V2 scenario |
+| Superhuman – [email/Alphasights brief] | [e.g. "Expert: buyers budget €200–300K initially"] | Entry ACV set conservatively at €250K |
+| Google Drive – [deck name] | [e.g. "Pitch deck claims €1.5B TAM, 2,500 accounts"] | Cross-checked against bottom-up |
+| Affinity | [e.g. "CIO buyer, budget from IT infra line"] | ICP fit % set to 40% |
+
+_Note "No data found" for any source with no results — do not skip._
 
 ## 1. Company & Product Summary
 [2–3 sentences: what it does, for whom, how priced]
