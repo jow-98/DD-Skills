@@ -5,117 +5,236 @@ description: Research and output a structured competitive analysis for a startup
 
 # Competitive Analysis Skill (Co Work / Markdown Output)
 
-Produce a structured competitive landscape analysis for a startup the user is evaluating in a DD process.
+Produce a structured competitive landscape analysis for a startup being evaluated in a DD process.
+Pull from every available knowledge source — internal memory first, then external data.
 
 ## Input
 
-The skill is invoked as `/competitive-analysis <Startup Name>` or with a company name / URL in the args.
+Invoked as `/competitive-analysis <Startup Name>` or with a company name / URL in args.
 
 ## Workflow
 
-Work through each step in order. Keep the user updated with one-line status messages as you go.
+Work through each step in order. Give the user a brief one-line status update as each step completes.
 
-### 1. Resolve the target company
+---
 
-Use `mcp__Specter__find_company` with the startup name or URL from args.
-Then call `mcp__Specter__get_company_profile` + `mcp__Specter__get_company_intelligence` on the resolved ID.
-Note: company ID is a 24-char hex string returned by `find_company`.
+### Step 1 — Internal knowledge sweep (run all in parallel)
 
-Extract and cache:
-- Full name, website, HQ location, headcount, founding year
-- One-paragraph product description (what it does, for whom, core value prop)
-- Last funding round & amount, lead investors
-- Primary product category / market segment
+Pull everything the firm already knows before touching any external source. Internal intelligence takes precedence over external data throughout the rest of the workflow.
 
-### 2. Identify competitors
+**1a. VC Knowledge Hub** ← start here, it's the fastest unified search across all internal sources
+Run all in parallel:
+- `mcp__vc-knowledge-hub__search` → _"[startup name]"_ — pulls the firm's full profile: Affinity data, meeting notes, pitch deck content, Drive docs, all in one call
+- `mcp__vc-knowledge-hub__get_company` → startup name — detailed company record with notes and meeting history
+- `mcp__vc-knowledge-hub__get_similar_companies` → startup name — competitors already seen in the firm's deal flow
+- `mcp__vc-knowledge-hub__ask` → _"What do we know about [startup name] and its competitive landscape? Include any expert or AlphaSight call notes, analyst views, and concerns raised."_ — multi-step AI reasoning across all sources
+- `mcp__vc-knowledge-hub__ask` → _"What competitors to [startup name] have we seen in our deal flow? Include any companies in similar spaces."_
+- `mcp__vc-knowledge-hub__search` → _"[inferred market category] competitors"_ — surface related companies from the deal flow
 
-Use `mcp__Specter__find_similar_companies` on the resolved company ID to get an initial list.
+For each competitor the hub returns, also call `mcp__vc-knowledge-hub__get_company` to pull their full profile including any notes.
 
-Then use `WebSearch` to supplement:
-- Search: `"<startup name>" competitors site:tracxn.com OR site:g2.com OR site:crunchbase.com`
-- Search: `best alternatives to "<startup name>" 2024 2025`
+**1b. Affinity CRM** (for data not captured by the hub, e.g. pipeline stage and field values)
+- `mcp__Affinity__search_companies` → find the CRM record and ID
+- `mcp__Affinity__get_notes_for_entity` (entity_type=1) → all analyst notes (may have richer detail than hub)
+- `mcp__Affinity__get_company_list_entries` → pipeline stage
+- For CRM-tracked competitors: `mcp__Affinity__get_notes_for_entity` on each
 
-Deduplicate and build a list of 10–20 meaningful competitors across these tiers:
-- **Direct** – same product, same customer, same stage
-- **Adjacent** – same problem, different approach or segment
-- **Incumbent** – established players the startup displaces
+**1c. Granola — founder calls AND expert/AlphaSight calls**
+Run all queries in parallel:
+- `mcp__Granola__query_granola_meetings` → _"[startup name] founders — product, market, competitive positioning"_
+- `mcp__Granola__query_granola_meetings` → _"[startup name] competitors risks threats concerns"_
+- `mcp__Granola__query_granola_meetings` → _"AlphaSight [startup name]"_ — expert calls via AlphaSight
+- `mcp__Granola__query_granola_meetings` → _"expert call [startup name] [inferred market/industry]"_ — any other expert/advisor calls
+- `mcp__Granola__query_granola_meetings` → _"[startup name] due diligence technical commercial"_
 
-### 3. Research each competitor
+For each relevant meeting ID returned, call `mcp__Granola__get_meetings` for the full summary and private notes, and `mcp__Granola__get_meeting_transcript` if you need exact quotes.
 
-For each competitor, use `mcp__Specter__find_company` → `mcp__Specter__get_company_profile` to pull:
-- URL, HQ location, headcount, founding year
-- Last funding & amount, key investors
-- One-sentence product description
-- Key differentiator vs. the target startup (how do they differ in approach, focus, or customer?)
+Categorise what you find into two buckets:
+  - **Founder/team calls** — what the startup's own people said about their market and competitors
+  - **Expert calls** — what independent industry experts, AlphaSight consultants, advisors, or reference calls said
 
-If Specter returns no result for a competitor, use `WebSearch` to fill the gaps.
+Preserve all Granola citation links `[[n]](url)` verbatim — they must appear in the final report.
 
-### 4. Determine feature dimensions
+**1d. Email — expert opinions and analyst research (Superhuman)**
+Run all in parallel:
+- `mcp__Superhuman__query_email_and_calendar` → _"Expert opinions or analyst views on [startup name] or its competitors"_
+- `mcp__Superhuman__query_email_and_calendar` → _"[startup name] — market research, analyst reports, or due diligence material"_
+- `mcp__Superhuman__query_email_and_calendar` → _"AlphaSight [startup name]"_ — AlphaSight email summaries or transcripts sent by email
+- `mcp__Superhuman__list_threads` with `body_contains` = startup name → pitch emails, forwarded research, follow-ups
+- `mcp__Superhuman__list_threads` with `subject_contains` = _"expert"_ or _"AlphaSight"_ or _"reference call"_ or _"advisor"_ and relevant time window
 
-Based on the target company's product category, identify 4–8 binary feature/capability dimensions that matter most for differentiation in this market. Examples:
-- For procurement software: Spend analytics, Supplier discovery, AI automation, Workflow automation, Real-time insights
-- For robotics safety software: HW vs SW, Dynamic safety, Human behavior prediction, AMR focus
-- For voice AI: S2S model, Telephony/SIP, Self-hosting, Open source, Inbound/Outbound calls
+For any threads found, call `mcp__Superhuman__get_thread` to read the full content.
 
-Label each dimension clearly.
+Extract: expert names/titles, their specific opinions on the startup and its competitors, any quantitative claims they made, and any competitive intelligence they shared.
 
-### 5. Build the competitor table
+**1e. Google Drive — prior memos, pitch decks, existing analyses**
+- `mcp__Google_Drive__search_files` with `fullText contains '[startup name]'`
+- `mcp__Google_Drive__search_files` with `title contains 'Competitor'` or `title contains 'Landscape'` or `title contains 'AlphaSight'`
+- `mcp__Google_Drive__read_file_content` on relevant files (memos, decks, prior competitor overviews, expert summaries)
 
-Output a markdown table with these columns (in order):
-| Company | URL | Location | Headcount | Founded | Product Description | Last Funding | Investors | Key Difference | Category | [Feature 1] | [Feature 2] | ... |
+Note: pitch deck PDFs attached in Affinity are already searchable via the hub's `search` tool — no need to pull them separately from Drive unless you need full document content.
+
+**Consolidation after Step 1:**
+Build an internal intelligence summary noting:
+- Competitors already known internally, with any views/scores
+- Expert opinions found (by source: AlphaSight call, network expert email, advisor note, etc.)
+- Founder claims about the competitive landscape
+- Any conflicts between internal views and external data — flag these explicitly
+
+---
+
+### Step 2 — Resolve the target company via Specter
+
+- `mcp__Specter__find_company` → `mcp__Specter__get_company_profile` + `mcp__Specter__get_company_intelligence`
+
+Extract: full name, website, HQ (ISO-2), headcount, founding year, product description, last funding, investors, primary market category.
+
+---
+
+### Step 3 — Identify competitors
+
+Triangulate from three sources in parallel:
+
+**3a. Specter** — `mcp__Specter__find_similar_companies` on the resolved company ID.
+
+**3b. Evertrace talent signals**
+- `mcp__Evertrace__search_companies` for the startup name → get its entity ID (exe_* format).
+- `mcp__Evertrace__list_signals` with `past_companies=[entity_id]` → reveals the talent ecosystem and which other companies share talent pools.
+- Repeat for 2–3 named direct competitors to map cross-company talent flows.
+
+**3c. Web search**
+- `WebSearch`: _"[startup name] competitors 2024 2025"_
+- `WebSearch`: _"best alternatives to [startup name]"_
+- `WebSearch`: _"[market category] competitive landscape [year]"_
+
+Merge all sources. Prioritise companies flagged in Step 1 internal intel.
+Target 10–20 competitors across tiers: **Direct** / **Adjacent** / **Incumbent**.
+
+---
+
+### Step 4 — Research each competitor
+
+For each competitor, use all available sources:
+
+| Source | Action |
+|--------|--------|
+| Specter | `find_company` → `get_company_profile` |
+| Affinity | `search_companies` → if found, `get_notes_for_entity` |
+| Granola | `query_granola_meetings` — any expert or founder calls mentioning this competitor? |
+| Superhuman | `query_email_and_calendar` — any email intel, expert opinions, or analyst views on this competitor? |
+| Web | `WebSearch` or `WebFetch` to fill remaining gaps |
+
+For each competitor collect: URL, HQ (ISO-2), headcount, founding year, product description (≤120 chars), last funding + investors, **Key Difference** from target startup (≤150 chars, specific), tier, and any expert opinion attached to this competitor.
+
+---
+
+### Step 5 — Determine comparison dimensions
+
+Based on the target startup's product and market, choose 5–8 dimensions for comparison. These may be:
+- **Binary feature checkmarks** (e.g. "Open source", "Self-hosting") — mark with ✓ / (✓) / –
+- **Descriptive attributes** (e.g. "Detection Range", "Sensor Technology", "Product Type") — fill with short text values
+
+Use Step 1 intel and the startup's actual product to decide. Pick dimensions that experts and founders have actually discussed, not generic ones.
+
+---
+
+### Step 6 — Build the competitor table
+
+Output a markdown table:
+
+| Company | URL | Location | Headcount | Founded | Product Description | Last Funding | Investors | Key Difference | Tier | [Dim 1] | [Dim 2] | … |
 
 Rules:
-- First row after header = the target startup (mark it clearly)
-- Use `✓` for confirmed feature present, `(✓)` for partial/limited, `–` for absent, `?` for unknown
-- Truncate Product Description to ~120 chars
-- Truncate Key Difference to ~150 chars focusing on how they differ FROM the target startup
-- Sort remaining rows: Direct competitors first, then Adjacent, then Incumbents
+- **First data row = target startup** (bold name, mark `← target`)
+- Sort: Direct → Adjacent → Incumbents
+- Binary dims: ✓ confirmed · (✓) partial · – absent · ? unknown
+- Descriptive dims: short text value or `—`
+- Rows where expert opinion exists: mark with † and reference the expert section below
 
-### 6. Write the analysis narrative
+---
 
-After the table, write four short sections (3–5 sentences each):
+### Step 7 — Narrative analysis
 
-**Market Overview** – Size, growth, key dynamics driving this market right now.
+**Market Overview** — Market size, growth drivers, key dynamics right now. (3–5 sentences)
 
-**Target Company Positioning** – Where the startup sits in the landscape. What it does distinctly well. Who it is most directly competing with.
+**Target Company Positioning** — Where the startup sits in the landscape. Distinct strengths. Who it most directly competes with and how it differentiates. (3–5 sentences)
 
-**Key Competitive Threats** – Top 3 companies that pose the most risk. Why.
+**Key Competitive Threats** — Top 3 companies posing the most risk. Why each is a threat. Reference expert opinions where available. (3–5 sentences)
 
-**Whitespace & Moat** – Where the startup has defensible differentiation or an underserved niche.
+**Whitespace & Moat** — Defensible differentiation or underserved niche. Signals from talent data, meeting notes, or expert calls that reinforce or challenge the moat thesis. (3–5 sentences)
 
-### 7. Source notes
+---
 
-List the main sources used (Specter, web searches, company websites) at the end.
+### Step 8 — Expert Intelligence section (REQUIRED if any expert content found)
+
+This section is mandatory if Step 1 surfaced any AlphaSight calls, expert emails, advisor notes, or reference calls.
+
+Format each expert opinion as a block:
+
+---
+**[Expert Name / Title / Source]** · _[date or meeting title if known]_ · [[citation]](url) ← preserve Granola link
+
+> "[Direct quote or close paraphrase of the expert's view]"
+
+**On the target startup:** [summary of what they said]
+**On competitors:** [which competitors they named, and what they said about each]
+**Red flags raised:** [any concerns, limitations, or risks they identified]
+**Validation points:** [anything they confirmed positively]
+
+---
+
+Include one block per expert source. Do not merge or paraphrase across experts — their individual views matter for triangulation.
+
+After the individual blocks, write a 2–3 sentence **Expert Consensus Summary**: where do independent experts agree, where do they diverge, and what open questions remain.
+
+---
+
+### Step 9 — Internal intelligence addendum (if additional CRM/email/Drive content found)
+
+Summarise Affinity analyst notes, email threads, and Drive documents that didn't fit elsewhere.
+Flag any conflicts between internal views and external/expert data.
+
+---
 
 ## Output format
 
 ```
 # Competitive Analysis: [Startup Name]
-_Generated [date] · Sources: Specter, web search_
+_[date] · Sources: VC Knowledge Hub, Affinity, Granola (AlphaSight + founder calls), Superhuman, Google Drive, Evertrace, Specter, web search_
 
 ## Competitor Overview
-
 [markdown table]
 
 ## Market Overview
-...
+…
 
 ## Target Company Positioning
-...
+…
 
 ## Key Competitive Threats
-...
+…
 
 ## Whitespace & Moat
-...
+…
 
-## Sources
-...
+## Expert Intelligence   ← mandatory if any expert content found
+[expert blocks]
+
+**Expert Consensus Summary:** …
+
+## Internal Intelligence  ← if additional CRM/email/Drive content
+…
+
+## Sources & Notes
+…
 ```
+
+---
 
 ## Important notes
 
-- Always put the target startup as the first data row so the reader can use it as a reference baseline.
-- If Specter data is unavailable for a company, still include the row and mark data as `?` — do not silently omit.
-- Cite your Key Difference observations specifically — avoid vague phrases like "less advanced". Instead write e.g. "focuses on supplier discovery only; lacks internal spend classification".
-- This is a DD context: be accurate and conservative. Do not embellish capabilities you have not confirmed.
+- **Expert opinions are primary evidence** — they override generic web research and should be quoted directly, not paraphrased into vague summaries.
+- AlphaSight call transcripts and expert emails from the firm's network contain proprietary DD intelligence that no external database has. Surface every usable insight.
+- Preserve all Granola citation links `[[n]](url)` verbatim in all sections.
+- The target startup is always the first table row — the baseline for all Key Difference comparisons.
+- Do not fabricate data. Mark unknown fields `?`. Accuracy over completeness in a DD context.
