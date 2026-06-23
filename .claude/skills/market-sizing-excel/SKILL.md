@@ -16,6 +16,46 @@ Optional: the user may pass a target output path. Default: `./<StartupName>__Mar
 
 Keep the user updated with one-line status messages.
 
+### 0. Gather all internal DD context first
+
+Before any external research, pull everything already in the pipeline. Run all of these in parallel:
+
+**Granola — meeting notes & expert calls:**
+Use `mcp__Granola__query_granola_meetings` with the startup name. For each result call `mcp__Granola__get_meeting_transcript`.
+Extract:
+- ICP descriptions given by founders or experts
+- Willingness-to-pay / budget range signals (specific figures are gold — use as ACV anchor)
+- Founder's own market size claims
+- Expert pushback on assumptions
+
+**Superhuman — email threads:**
+Use `mcp__Superhuman__query_email_and_calendar` with the startup name. Also search `"<startup name>" Alphasights`, `"<startup name>" expert`, `"<startup name>" customer`.
+Extract:
+- Alphasights / expert network briefs — these contain ICP definitions and buyer budget data
+- Founder emails describing pricing model or customer pipeline
+- Expert commentary on market size or competitors
+- Any attached or linked decks
+
+**Google Drive — decks and documents:**
+Use `mcp__Google_Drive__search_files` with the startup name. For each relevant file call `mcp__Google_Drive__read_file_content` or `mcp__Google_Drive__download_file_content`.
+Extract:
+- The startup's own TAM/SAM/SOM figures and sources
+- Pricing slides (ACV, take-rate, tiers)
+- ICP slides (target company profile, size, industry, geography)
+
+**Affinity — CRM notes:**
+Use `mcp__Affinity__search_companies` to find the company, then `mcp__Affinity__get_notes_for_entity` and `mcp__Affinity__get_meetings_for_entity`.
+Extract: any ICP, pricing, or market size commentary from team notes.
+
+**Synthesise before modelling:**
+Compile a "known facts" cache:
+- Confirmed ICP (from experts / Alphasights / founders)
+- ACV range signalled internally — use as the primary anchor for scenario design
+- Founder's own market claim (include as a row in the Top-Down sheet for comparison)
+- Any contradictions between sources — model them as separate scenarios and flag in Notes
+
+Only use web research to fill gaps that internal sources do not cover.
+
 ### 1. Resolve the target company
 
 Use `mcp__Specter__find_company` with the startup name or URL.
@@ -56,14 +96,22 @@ Record the exact source URL for each region's count. Do not estimate counts with
 
 ### 4. Determine ACV scenarios
 
-Model 2–3 ACV scenarios (e.g. Initial / Mid-Market / Full Rollout, or V1 / V2 / Enterprise):
-- Use any public pricing data
-- Benchmark against comparable SaaS in the same category
-- Reference the startup's own pitch materials if available
+Use internal DD context (Step 0) as the primary source — external research fills gaps only.
 
-Search:
-- `"<startup name>" pricing`
-- `<category> SaaS ACV benchmark average contract value`
+Priority order:
+1. **Expert call transcripts** (Granola) — willingness-to-pay / budget ceiling from practitioners
+2. **Alphasights briefs** (Superhuman) — buyer budget ranges from expert network
+3. **Pitch deck pricing slide** (Google Drive) — founder's ACV claim
+4. **Founder emails / CRM notes** — pricing discussed informally
+5. **Public pricing page** — search `"<startup name>" pricing`
+6. **Category benchmarks** — search `<category> SaaS ACV benchmark average contract value`
+
+Model 2–3 scenarios:
+- If expert WTP data exists: use it as the conservative (entry) scenario; use founder's claimed ACV as the optimistic scenario
+- If only founder data exists: use it as mid; build conservative (-40%) and optimistic (+50%) variants
+- If no internal data: build 3 scenarios from benchmarks and flag as estimated
+
+If sources conflict, model each as a separate named scenario (e.g. "Expert WTP" vs "Founder Claim") and explain the gap in the Notes block.
 
 ### 5. Calculate TAM / SAM / SOM
 
@@ -106,10 +154,13 @@ Row 2 of block: Column headers:
 Data rows: one per region, then a **Total** row (summing TAM and SAM).
 
 After the last scenario block: a **Notes / Assumptions** text block explaining:
-- ICP definition
+- ICP definition and source (founder description, Alphasights brief, expert call, or inferred)
+- ACV basis: which internal source anchored each scenario (expert WTP, Alphasights brief, pitch deck, or external benchmark)
 - Reasoning for ICP Fit % values
 - Reasoning for Market Share % values
 - Data vintage (year of statistics used)
+- Internal sources consulted: list Granola meetings, Superhuman threads, and Google Drive docs used
+- Any conflicts between internal sources and how they were resolved in the model
 
 ---
 
@@ -118,8 +169,11 @@ After the last scenario block: a **Notes / Assumptions** text block explaining:
 Column headers:
 `Category | Unit | Current Year Amount | Forecast Year Amount | CAGR | Source`
 
-Rows: one per top-down reference / category.
-Bottom row: implied addressable market at the startup's take-rate or penetration assumption (cross-reference to bottom-up SAM).
+Rows:
+- One row per external top-down market report (Gartner, MarketsandMarkets, etc.)
+- One row for the **founder's own TAM claim** (sourced from pitch deck or Granola/Superhuman — label it "Founder claim – [source]")
+- One row for the **expert / Alphasights implied market** if any expert gave a market size opinion
+- Bottom row: your bottom-up SAM (V2 / mid scenario) as the cross-reference anchor
 
 ---
 

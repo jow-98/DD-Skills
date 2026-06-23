@@ -20,6 +20,52 @@ The user may optionally provide extra context in the args, e.g.:
 
 Work through each step in order. Keep the user updated with one-line status messages.
 
+### 0. Gather all internal DD context first
+
+Before doing any external research, pull everything already in the pipeline about this startup. Run all of these in parallel:
+
+**Granola — meeting notes & expert calls:**
+Use `mcp__Granola__query_granola_meetings` with the startup name to find all recorded meetings (founder calls, expert calls, partner discussions). For each result call `mcp__Granola__get_meeting_transcript` to get the full transcript.
+Extract and cache:
+- Any ICP descriptions the founders or experts gave
+- Willingness-to-pay signals (specific price points mentioned, budget ranges, buyer personas)
+- Market size numbers the founders claimed (their own TAM/SAM assumptions)
+- Customer names or segments mentioned
+- Any expert pushback on market assumptions
+
+**Superhuman — email threads:**
+Use `mcp__Superhuman__query_email_and_calendar` with the startup name to find all relevant email threads.
+Also search for related terms: `"<startup name>" Alphasights`, `"<startup name>" expert`, `"<startup name>" customer`.
+Extract and cache:
+- Alphasights / expert network briefs sent or received — these contain ICP definitions and willingness-to-pay data
+- Any founder emails describing their pricing model or customer pipeline
+- Expert replies with market commentary or competitor callouts
+- Any forwarded decks or attachments referenced
+
+**Google Drive — decks and documents:**
+Use `mcp__Google_Drive__search_files` with the startup name to find pitch decks, market sizing docs, or DD memos already on file.
+For each relevant file call `mcp__Google_Drive__read_file_content` or `mcp__Google_Drive__download_file_content`.
+Extract and cache:
+- The startup's own TAM/SAM/SOM figures and methodology
+- Any pricing slides (ACV, pricing tiers, take-rate assumptions)
+- ICP slides (customer profile, target company size, industries)
+- Any market research slides with cited sources
+
+**Affinity — CRM notes:**
+Use `mcp__Affinity__search_companies` with the startup name to find the company in the CRM.
+Then call `mcp__Affinity__get_notes_for_entity` and `mcp__Affinity__get_meetings_for_entity` to retrieve all notes and meeting logs.
+Extract: any ICP, pricing, or market size commentary logged by the team.
+
+**Synthesise internal context:**
+After gathering all internal data, compile a "known facts" summary:
+- Confirmed ICP (from founders, experts, or Alphasights briefs)
+- Confirmed or signalled ACV / pricing (from deck, emails, expert calls)
+- Founder's own market size claim (to compare with your model)
+- Any willingness-to-pay data from expert calls or customer conversations
+- Flag any contradictions between sources (e.g. founder claims $500K ACV but expert says $100K is the ceiling)
+
+Use this internal context to anchor the model. Only use web research to fill gaps or validate numbers that are absent from internal sources.
+
 ### 1. Resolve the target company
 
 Use `mcp__Specter__find_company` with the startup name or URL.
@@ -68,20 +114,19 @@ c. Record the source URL for each company count.
 
 ### 4. Determine ACV (Annual Contract Value)
 
-Estimate the expected ACV per customer. Use:
-- Any public pricing the startup has disclosed
-- Comparable SaaS pricing benchmarks for the category
-- Per-unit economics (e.g. price × typical usage volume)
-- Investor materials / pitch deck data if provided
+Use internal DD context first (Step 0), then fill gaps with external research.
 
-If pricing has multiple tiers or scenarios, model 2–3 scenarios (e.g. Entry / Mid / Enterprise ACV).
+Priority order for ACV inputs:
+1. **Expert call transcripts** (Granola) — willingness-to-pay signals from customers or industry experts are the strongest signal
+2. **Alphasights / expert network briefs** (Superhuman) — often contain explicit budget range data from practitioners
+3. **Startup's own pitch deck** (Google Drive) — founder's claimed ACV or pricing model
+4. **Founder emails / CRM notes** (Superhuman / Affinity) — pricing discussed in context
+5. **Public pricing pages** — search `"<startup name>" pricing`
+6. **Category SaaS benchmarks** — search `<category> SaaS average contract value benchmark`
 
-Search for benchmarks:
-- `"<startup name>" pricing`
-- `<category> SaaS average contract value benchmark`
-- `<comparable company> ARR per customer`
+If sources conflict (e.g. founder claims higher ACV than experts suggest is achievable), model both as separate scenarios and flag the divergence explicitly.
 
-Always cite the source or reasoning for the ACV figure.
+Always cite the source or reasoning for every ACV figure used.
 
 ### 5. Calculate TAM, SAM, SOM
 
@@ -134,7 +179,19 @@ Note what could expand the market (e.g. APAC, SMB segment, adjacent verticals no
 
 ```markdown
 # Market Sizing: [Startup Name]
-_Generated [date] · Bottom-up methodology · Sources cited inline_
+_Generated [date] · Bottom-up methodology · Sources: Granola, Superhuman, Google Drive, Specter, web search_
+
+## 0. Internal DD Context
+_What we already know from the pipeline — meetings, emails, decks, expert calls_
+
+| Source | Key Finding | Implication for Model |
+|---|---|---|
+| Granola – [meeting/date] | [e.g. "Founder: ACV €400–600K mid-market"] | Used as ACV anchor for V2 scenario |
+| Superhuman – [email/Alphasights brief] | [e.g. "Expert: buyers budget €200–300K initially"] | Entry ACV set conservatively at €250K |
+| Google Drive – [deck name] | [e.g. "Pitch deck claims €1.5B TAM, 2,500 accounts"] | Cross-checked against bottom-up |
+| Affinity | [e.g. "CIO buyer, budget from IT infra line"] | ICP fit % set to 40% |
+
+_Note "No data found" for any source with no results — do not skip._
 
 ## 1. Company & Product Summary
 [2–3 sentences: what it does, for whom, how priced]
