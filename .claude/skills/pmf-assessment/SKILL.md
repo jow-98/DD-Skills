@@ -37,6 +37,28 @@ Product-Market Fit (PMF) is the degree to which a product satisfies strong marke
 
 ---
 
+## Step 0 — Pull from VC Knowledge Hub
+
+Before running any PMF framework, sweep internal sources for existing signals on this company.
+
+```
+mcp__vc-knowledge-hub__search("<company name>")
+  → find all prior touchpoints: Affinity notes, Granola meeting transcripts, Drive documents
+
+mcp__vc-knowledge-hub__get_company("<company name>")
+  → company profile with meeting history and pitch deck content — surface any retention or NPS data shared by the founders
+
+mcp__vc-knowledge-hub__ask("What PMF signals has 42CAP seen for <company name>? Include retention data, NPS scores, churn figures, and any customer reference feedback.")
+  → synthesised answer with citations across all sources
+
+mcp__vc-knowledge-hub__get_meeting_feed()
+  → catch any recent founder or customer calls with PMF-relevant commentary
+```
+
+Cache: any "very disappointed" survey data, retention curve shape, NPS, churn figures, or customer reference quotes already in the pipeline. Use these as the primary evidence base before applying the frameworks below.
+
+---
+
 ## Measuring Product-Market Fit
 
 ### The Sean Ellis Test (40% Rule)

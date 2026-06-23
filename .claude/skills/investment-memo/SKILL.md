@@ -23,6 +23,39 @@ Before starting, confirm with the user or pull from Affinity:
 
 ---
 
+## Step 0 — Pull from VC Knowledge Hub
+
+Run first. The VC Knowledge Hub aggregates Affinity, Granola, and Google Drive in one semantic layer, so a single sweep often surfaces context faster than hitting each source individually.
+
+```
+mcp__vc-knowledge-hub__search("<company name>")
+  → unified semantic search across Affinity notes, Granola transcripts, and Drive docs
+  → use to discover all prior touchpoints and documents before diving into individual sources
+
+mcp__vc-knowledge-hub__get_company("<company name>")
+  → full company profile: CRM fields, notes, meeting history, pitch deck content extracted
+  → cache: round details, valuation, team names, product description, any thesis drafts
+
+mcp__vc-knowledge-hub__ask("What is 42CAP's current view on <company name>? Summarise the investment thesis, key concerns, and any IC feedback.")
+  → synthesised answer with citations from all connected sources
+
+mcp__vc-knowledge-hub__list_portfolio()
+  → retrieve current portfolio for synergy or conflict checks (referenced in Investment Criteria)
+
+mcp__vc-knowledge-hub__get_portfolio_dashboard()
+  → portfolio-level context: sector concentrations, stage mix — relevant for IC framing
+
+mcp__vc-knowledge-hub__get_meeting_feed()
+  → recent meetings across all portfolio and pipeline companies — catch any recent calls not yet in Affinity
+
+mcp__vc-knowledge-hub__get_similar_companies("<company name>")
+  → competitors and comparables already in 42CAP deal flow — use for Market & Competition section
+```
+
+Use the output to pre-populate as many memo fields as possible before the per-source steps below. Flag any conflicts between sources (e.g. different round sizes in Affinity vs. a pitch deck in Drive).
+
+---
+
 ## Step 1 — Pull from Affinity
 
 Search for the company and extract deal details, notes, and meetings.

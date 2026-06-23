@@ -24,6 +24,13 @@ Work through each step in order. Keep the user updated with one-line status mess
 
 Before doing any external research, pull everything already in the pipeline about this startup. Run all of these in parallel:
 
+**VC Knowledge Hub — unified sweep (run first):**
+Use `mcp__vc-knowledge-hub__search` with the startup name to find all prior touchpoints across Affinity, Granola, and Drive in one pass.
+Then call `mcp__vc-knowledge-hub__get_company` for the full company profile with notes and pitch deck content extracted.
+Call `mcp__vc-knowledge-hub__ask("What market size figures, ICP definitions, and pricing assumptions has 42CAP collected for <startup name>?")` for a synthesised summary with source citations.
+Call `mcp__vc-knowledge-hub__get_similar_companies` to surface comparable companies in 42CAP deal flow — use as ICP and pricing benchmarks.
+Extract and cache: any TAM/SAM claims, ICP definitions, ACV or pricing signals, founder market size assertions.
+
 **Granola — meeting notes & expert calls:**
 Use `mcp__Granola__query_granola_meetings` with the startup name to find all recorded meetings (founder calls, expert calls, partner discussions). For each result call `mcp__Granola__get_meeting_transcript` to get the full transcript.
 Extract and cache:

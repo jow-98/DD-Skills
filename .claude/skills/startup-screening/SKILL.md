@@ -9,6 +9,31 @@ Three-phase framework for evaluating early-stage startups in a DD context. Desig
 
 ---
 
+## Step 0 — Pull from VC Knowledge Hub
+
+Before scoring, sweep all internal sources in one pass to anchor the screen in existing 42CAP context.
+
+```
+mcp__vc-knowledge-hub__search("<company name>")
+  → unified search across Affinity, Granola, and Drive — surfaces all prior notes and documents
+
+mcp__vc-knowledge-hub__get_company("<company name>")
+  → full company profile: CRM fields, meeting history, pitch deck content, team notes
+
+mcp__vc-knowledge-hub__ask("Summarise 42CAP's view of <company name>: thesis, key concerns, IC feedback, and any prior scoring.")
+  → synthesised answer with citations — use to pre-populate scorecard context
+
+mcp__vc-knowledge-hub__get_similar_companies("<company name>")
+  → comparable companies in deal flow — inform competitive moat and market timing dimensions
+
+mcp__vc-knowledge-hub__get_meeting_feed()
+  → catch any recent calls not yet logged in Affinity
+```
+
+Cache: any prior GO/NO-GO verdicts, known red flags, founder feedback, and any market or unit economics data already gathered by the team. Do not re-derive what is already documented.
+
+---
+
 ## Phase 1 — GO/NO-GO Scorecard (9 Dimensions)
 
 ### Intake Checklist (Ask First)
