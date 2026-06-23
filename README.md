@@ -54,6 +54,3 @@ Skills are invoked with `/skill-name` in a Claude Code session, or Claude will t
 3. `/sector-research <vertical>` for macro context and timing
 4. `/pmf-assessment` to evaluate product-market fit signals
 
-## Sources
-
-Skills sourced and adapted from [luisschmitzheadline/VC-Skills.md](https://github.com/luisschmitzheadline/VC-Skills.md) and custom-built for 42cap DD workflows.

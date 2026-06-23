@@ -440,7 +440,100 @@ print(f"Saved: {output_path}")
 
 Fill all data variables with actual research results, then execute.
 
-### 8. Verify and send the file
+### 7b. Optional Sheet 3: "Value-Theory"
+
+Add this sheet when the startup creates a new category, displaces significant existing spend, or when bottom-up and top-down are diverging significantly. Skip it otherwise and note "Not applicable — comparable pricing exists."
+
+#### Sheet 3 layout
+
+Column headers: `Input | Value | Source / Reasoning`
+
+Rows (one per assumption):
+1. Problem cost per customer (€/yr)
+2. % of problem solved by product
+3. Value created per customer (= row 1 × row 2)
+4. Willingness-to-pay % (10–30%)
+5. Implied ACV (= row 3 × row 4)
+6. Total ICP customers
+7. TAM — Value Theory (= row 5 × row 6)
+8. ICP Fit % (same as Bottom-Up sheet)
+9. SAM — Value Theory (= row 7 × row 8)
+10. Market Share % (same as Bottom-Up sheet)
+11. SOM — Value Theory (= row 9 × row 10)
+
+After the table: a comparison row showing Value-Theory ACV vs. Bottom-Up ACV and whether they are aligned (within 2–3×), with a 2–3 sentence interpretation.
+
+Styling: same grey headers, blue Total rows. Sheet name: `Value-Theory`.
+
+```python
+# Only add if value_theory_applicable is True
+value_theory_applicable = True  # set False to skip
+
+if value_theory_applicable:
+    ws3 = wb.create_sheet("Value-Theory")
+
+    vt_headers = ["Input", "Value", "Source / Reasoning"]
+    for ci, h in enumerate(vt_headers, 1):
+        c = ws3.cell(1, ci, h)
+        c.font = Font(bold=True); c.fill = grey_fill
+        c.border = border; c.alignment = Alignment(wrap_text=True)
+
+    # Fill these from research:
+    problem_cost     = 0      # €/yr per customer
+    pct_solved       = 0.40   # 40%
+    value_per_cust   = problem_cost * pct_solved
+    wtp_pct          = 0.20   # 20%
+    implied_acv      = value_per_cust * wtp_pct
+    total_icp        = 0      # from Step 2 ICP count
+    icp_fit_pct      = 0.35
+    market_share_pct = 0.01
+
+    tam_vt = implied_acv * total_icp
+    sam_vt = tam_vt * icp_fit_pct
+    som_vt = sam_vt * market_share_pct
+
+    vt_rows = [
+        ("Problem cost per customer (€/yr)",   f"€{problem_cost:,.0f}",   "[source]"),
+        ("% of problem solved by product",      f"{pct_solved:.0%}",       "[reasoning]"),
+        ("Value created per customer",          f"€{value_per_cust:,.0f}", "= row 1 × row 2"),
+        ("Willingness-to-pay %",               f"{wtp_pct:.0%}",          "Typical SaaS: 10–30%"),
+        ("Implied ACV",                         f"€{implied_acv:,.0f}",    "= row 3 × row 4"),
+        ("Total ICP customers",                 f"{total_icp:,}",          "[source]"),
+        ("TAM — Value Theory",                  f"€{tam_vt:,.0f}",         "= ACV × ICP count"),
+        ("ICP Fit %",                           f"{icp_fit_pct:.0%}",      "Same as Bottom-Up"),
+        ("SAM — Value Theory",                  f"€{sam_vt:,.0f}",         "= TAM × ICP Fit %"),
+        ("Market Share %",                      f"{market_share_pct:.0%}", "Same as Bottom-Up"),
+        ("SOM — Value Theory",                  f"€{som_vt:,.0f}",         "= SAM × Market Share %"),
+    ]
+    for ri, (label, val, src) in enumerate(vt_rows, 2):
+        is_total = "TAM" in label or "SAM" in label or "SOM" in label
+        for ci, v in enumerate([label, val, src], 1):
+            c = ws3.cell(ri, ci, v)
+            c.border = border
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+            if is_total:
+                c.font = Font(bold=True); c.fill = blue_fill
+
+    # Comparison note
+    note_row = len(vt_rows) + 3
+    note = (
+        f"Value-Theory ACV: €{implied_acv:,.0f} vs. Bottom-Up ACV: €[bottom_up_acv]. "
+        "Divergence: [X×]. Interpretation: [aligned / pricing risk / problem cost overestimated]."
+    )
+    c = ws3.cell(note_row, 1, note)
+    c.font = Font(italic=True); c.fill = yellow_fill
+    c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws3.merge_cells(start_row=note_row, start_column=1, end_row=note_row + 2, end_column=3)
+
+    ws3.freeze_panes = "A2"
+    for col in ws3.columns:
+        maxw = max((len(str(c.value)) for c in col if c.value), default=10)
+        ws3.column_dimensions[get_column_letter(col[0].column)].width = min(maxw + 2, 60)
+```
+
+---
+
+### 8. Verify the file
 
 ```bash
 ls -lh <output_path>
@@ -453,7 +546,11 @@ for name in wb.sheetnames:
 "
 ```
 
+Expected: `Bottom-Up`, `Top-Down`, and optionally `Value-Theory`.
+
 Then send the file to the user using the `SendUserFile` tool so they can download it directly from Claude.
+
+### 9. Commit and push
 
 Do **not** commit or push the generated `.xlsx` file — it is a per-deal output, not part of the skills repo.
 
