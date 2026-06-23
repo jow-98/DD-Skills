@@ -33,6 +33,8 @@ Run all in parallel:
 
 For each competitor the hub returns, also call `mcp__vc-knowledge-hub__get_company` to pull their full profile including any notes.
 
+If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
+
 **1b. Affinity CRM** (for data not captured by the hub, e.g. pipeline stage and field values)
 - `mcp__Affinity__search_companies` → find the CRM record and ID
 - `mcp__Affinity__get_notes_for_entity` (entity_type=1) → all analyst notes (may have richer detail than hub)

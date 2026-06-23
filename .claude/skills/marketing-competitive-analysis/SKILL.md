@@ -32,6 +32,8 @@ mcp__vc-knowledge-hub__get_meeting_feed()
 
 Cache: any battlecard drafts, positioning notes, competitor mentions from founder calls, or expert commentary on market messaging. Use as the starting point before applying the frameworks below.
 
+If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
+
 ---
 
 ## Data sources

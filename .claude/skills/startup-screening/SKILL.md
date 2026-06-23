@@ -32,6 +32,8 @@ mcp__vc-knowledge-hub__get_meeting_feed()
 
 Cache: any prior GO/NO-GO verdicts, known red flags, founder feedback, and any market or unit economics data already gathered by the team. Do not re-derive what is already documented.
 
+If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
+
 ---
 
 ## Phase 1 — GO/NO-GO Scorecard (9 Dimensions)
