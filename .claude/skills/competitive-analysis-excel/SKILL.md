@@ -576,3 +576,15 @@ git push -u origin <current-branch>
 - Target startup is always row 3. Key Difference always describes how a competitor differs *from the target*.
 - The third section label (`Features` / `Product` / `Category`) should reflect the market: use `Product` for hardware/deep-tech comparisons (like Alethos radar), `Features` for software capability comparisons, `Category` for market segment groupings.
 - Do not fabricate data. Unknown = blank. This is a DD document.
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

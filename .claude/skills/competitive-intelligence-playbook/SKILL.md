@@ -1356,3 +1356,15 @@ END_STRATARTS_CONTEXT -->
    - `.footer-brand` or `.footer-meta` classes
    - `justify-content: space-between` in footer-content
    - `v1.0` or `v2.0.0` (incorrect version formats)
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

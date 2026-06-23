@@ -575,3 +575,15 @@ When done, report:
 - If the startup targets a niche (e.g. pharma manufacturers only), apply NACE/SIC filtering in the ICP count — do not use the full industry universe.
 - Currency: use €  if the startup is EU-based, $ if US-based. Be consistent across the file.
 - The file format must match the existing DD Excel examples: two sheets, scenario blocks, sourced rows.
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

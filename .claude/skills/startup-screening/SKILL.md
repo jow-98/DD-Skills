@@ -270,3 +270,15 @@ If the startup depends on AI (agents, LLMs, automation), validate explicitly:
 | Pre-seed | Problem severity, founder-market fit | Early interviews, smoke tests | Vision + team |
 | Seed | PMF signals, GTM clarity | Retention curves, first cohorts | Unit economics path |
 | Series A | Proven unit economics | Repeatability, NDR, payback | Scale model + exit |
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+

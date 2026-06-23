@@ -765,3 +765,15 @@ Before sending, verify:
 - [ ] Funding: past rounds (achievements) → current round (use of funds + what will be proven) → future needs → exit channels with named candidates → cap table
 - [ ] Team: CEO (with Fund Raising Power) → CPO → CRO → CFO → other hires; ref call findings included
 - [ ] Additional documents: reflects actual materials in DD folder
+
+
+---
+
+## Language and Tone
+
+- Use expert terminology appropriate to the context (VC due diligence, financial analysis, competitive intelligence)
+- Avoid superfluous prose, self-references, expert advice disclaimers, and apologies
+- No em dashes or en dashes; use commas, parentheses, or rewrite the sentence instead
+- Lead with data and specific findings; interpretation follows the evidence
+- No superlatives (world-class, revolutionary, best-in-class, cutting-edge)
+
