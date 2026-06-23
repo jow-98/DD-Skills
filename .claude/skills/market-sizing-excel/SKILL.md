@@ -1,6 +1,6 @@
 ---
 name: market-sizing-excel
-description: Research a startup being evaluated in due diligence and generate an Excel (.xlsx) Market Sizing file with bottom-up TAM/SAM/SOM tables by region, scenarios, top-down validation, and full source citations. Use when asked to create a market sizing Excel, build a market sizing spreadsheet, or generate a TAM/SAM file.
+description: "Research a startup in due diligence and generate an Excel (.xlsx) Market Sizing file with bottom-up TAM/SAM/SOM tables by region, scenarios, top-down validation, and source citations. Use this over market-sizing when the output must be .xlsx. Use when asked to create a market sizing Excel, build a market sizing spreadsheet, or generate a TAM/SAM file."
 ---
 
 # Market Sizing — Excel Output Skill

@@ -1,6 +1,6 @@
 ---
 name: competitive-analysis-excel
-description: Research competitors for a startup being evaluated in due diligence and generate an Excel (.xlsx) Competitor Overview file matching the standard DD format. Use when asked to create a competitor Excel, build a competitive analysis spreadsheet, or generate a comp overview file.
+description: "Research competitors for a startup in due diligence and generate an Excel (.xlsx) Competitor Overview file. Use this over competitive-analysis when the output must be .xlsx with multiple tabs (competitor overview, Porter's/SWOT, marketing intel). Use when asked to create a competitor Excel, build a competitive analysis spreadsheet, or generate a comp overview file."
 ---
 
 # Competitive Analysis — Excel Output Skill
