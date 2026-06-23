@@ -29,7 +29,7 @@ Produce a structured market brief for a specific vertical or startup category.
    - `<sector> market size TAM 2024 2025 CAGR Gartner IDC forecast`
    - `<sector> competitive landscape key players 2024`
    - `<sector> regulatory trends technology drivers`
-3. Pull internal briefs if VC Knowledge Hub or Google Drive is connected (`mcp__vc-knowledge-hub__search` → sector name; `mcp__Google_Drive__search_files` → sector keywords).
+3. Pull internal briefs if VC Knowledge Hub or Google Drive is connected (`mcp__vc-knowledge-hub__search` → sector name; `mcp__Google_Drive__search_files` → sector keywords). If the VC Knowledge Hub returns no results or incomplete data, fall through to Google Drive, Affinity, and Granola directly — those remain the authoritative sources.
 4. Produce the structured brief per output structure above.
 5. For detailed competitive analysis, invoke `/competitive-analysis <startup name>`. For full market sizing, invoke `/market-sizing <startup name>`.
 

@@ -31,6 +31,8 @@ Call `mcp__vc-knowledge-hub__ask("What market size figures, ICP definitions, and
 Call `mcp__vc-knowledge-hub__get_similar_companies` to surface comparable companies in 42CAP deal flow — use as ICP and pricing benchmarks.
 Extract and cache: any TAM/SAM claims, ICP definitions, ACV or pricing signals, founder market size assertions.
 
+If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors below (Granola, Superhuman, Google Drive, Affinity, Evertrace) — those remain the authoritative sources.
+
 **Granola — meeting notes & expert calls:**
 Use `mcp__Granola__query_granola_meetings` with the startup name to find all recorded meetings (founder calls, expert calls, partner discussions). For each result call `mcp__Granola__get_meeting_transcript` to get the full transcript.
 Extract and cache:
