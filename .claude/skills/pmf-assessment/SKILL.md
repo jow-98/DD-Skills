@@ -51,11 +51,23 @@ mcp__vc-knowledge-hub__get_company("<company name>")
 mcp__vc-knowledge-hub__ask("What PMF signals has 42CAP seen for <company name>? Include retention data, NPS scores, churn figures, and any customer reference feedback.")
   → synthesised answer with citations across all sources
 
+mcp__vc-knowledge-hub__search_research_findings("<company name>")
+  → retrieve any prior PMF or retention analysis already saved on this company
+
+mcp__vc-knowledge-hub__search_investor_insights("<company name>")
+  → retrieve saved investor views on PMF signals or retention quality for this company or sector
+
+mcp__vc-knowledge-hub__search_operator_playbooks("<sector or business model>")
+  → surface operator playbooks with PMF benchmarks, retention norms, or NPS targets for this vertical
+
 mcp__vc-knowledge-hub__get_meeting_feed()
   → catch any recent founder or customer calls with PMF-relevant commentary
 ```
 
 Cache: any "very disappointed" survey data, retention curve shape, NPS, churn figures, or customer reference quotes already in the pipeline. Use these as the primary evidence base before applying the frameworks below.
+
+After completing the assessment, save key findings:
+`mcp__vc-knowledge-hub__store_insight("<company name>: <PMF verdict and key signals>")` — surfaces in future search_investor_insights queries.
 
 If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
 

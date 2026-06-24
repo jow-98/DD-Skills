@@ -29,9 +29,37 @@ Produce a structured market brief for a specific vertical or startup category.
    - `<sector> market size TAM 2024 2025 CAGR Gartner IDC forecast`
    - `<sector> competitive landscape key players 2024`
    - `<sector> regulatory trends technology drivers`
-3. Pull internal briefs if VC Knowledge Hub or Google Drive is connected (`mcp__vc-knowledge-hub__search` → sector name; `mcp__Google_Drive__search_files` → sector keywords). If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
+3. Pull internal context from VC Knowledge Hub first, then fall through to other connectors if needed:
+   ```
+   mcp__vc-knowledge-hub__search("<sector name>")
+     → prior sector notes, memos, and research across Affinity, Granola, and Drive
+
+   mcp__vc-knowledge-hub__get_thesis_themes()
+     → 42CAP's active thesis themes — frame sector relevance and timing against fund thesis
+
+   mcp__vc-knowledge-hub__search_research_findings("<sector name>")
+     → retrieve any saved sector research or analysis already on file
+
+   mcp__vc-knowledge-hub__search_investor_insights("<sector name>")
+     → retrieve saved investor views on this sector
+
+   mcp__vc-knowledge-hub__search_operator_playbooks("<sector name>")
+     → surface any operator playbooks relevant to this vertical
+
+   mcp__Google_Drive__search_files("<sector keywords>")
+     → additional decks, briefs, or memos stored in Drive
+   ```
+   If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
 4. Produce the structured brief per output structure above.
-5. For detailed competitive analysis, invoke `/competitive-analysis <startup name>`. For full market sizing, invoke `/market-sizing <startup name>`.
+5. Save the output for future reuse:
+   ```
+   mcp__vc-knowledge-hub__save_research_analysis("<sector name>", summary="<key findings>")
+     → persist the sector brief so it surfaces in future search_research_findings queries
+
+   mcp__vc-knowledge-hub__save_thesis_theme("<theme>")
+     → if this sector brief surfaces a new thesis theme, save it to the hub
+   ```
+6. For detailed competitive analysis, invoke `/competitive-analysis <startup name>`. For full market sizing, invoke `/market-sizing <startup name>`.
 
 ### Data Sources (in priority order)
 

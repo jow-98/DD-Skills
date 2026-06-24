@@ -26,8 +26,13 @@ Before any external research, pull everything already in the pipeline. Run all o
 Use `mcp__vc-knowledge-hub__search` with the startup name to find all prior touchpoints across Affinity, Granola, and Drive in one pass.
 Then call `mcp__vc-knowledge-hub__get_company` for the full company profile with notes and pitch deck content extracted.
 Call `mcp__vc-knowledge-hub__ask("What market size figures, ICP definitions, and pricing assumptions has 42CAP collected for <startup name>?")` for a synthesised summary with source citations.
+Call `mcp__vc-knowledge-hub__search_research_findings("<startup name>")` to retrieve any prior market sizing or sector research already saved.
+Call `mcp__vc-knowledge-hub__search_operator_playbooks("<sector>")` to surface any operator playbooks with ICP or pricing benchmarks for this vertical.
 Call `mcp__vc-knowledge-hub__get_similar_companies` to surface comparable companies in 42CAP deal flow — use as ICP and pricing benchmarks.
 Extract and cache: any TAM/SAM claims, ICP definitions, ACV or pricing signals, founder market size assertions.
+
+After completing the sizing, save for future reuse:
+`mcp__vc-knowledge-hub__save_research_analysis("<startup name>", summary="<bottom-up TAM/SAM/SOM summary with key assumptions>")`.
 
 If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
 
