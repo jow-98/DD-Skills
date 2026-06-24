@@ -66,6 +66,8 @@ mcp__vc-knowledge-hub__get_similar_companies("<company name>")
 
 Use the output to pre-populate as many memo fields as possible before the per-source steps below. Flag any conflicts between sources (e.g. different round sizes in Affinity vs. a pitch deck in Drive).
 
+**Key signal to look for in Step 0:** if the hub surfaces a competitive analysis doc or market sizing doc already in Drive, note the file ID or name. Step 4 will pull these as the primary source for Market & Competition — no need to re-research externally.
+
 If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
 
 ---
@@ -149,20 +151,34 @@ mcp__Specter__get_company_profile(competitor_id)
 
 ## Step 4 — Pull Google Drive materials
 
-Search for the company's DD folder:
+This is the primary source for Market & Competition and Financials. Pull and read all DD documents before drafting any content.
 
 ```
+# Market & Competition — look for these first
+mcp__Google_Drive__search_files(query="<company> competitive analysis")
+mcp__Google_Drive__search_files(query="<company> competitor overview")
+mcp__Google_Drive__search_files(query="<company> competitive landscape")
+mcp__Google_Drive__search_files(query="<company> market sizing")
+mcp__Google_Drive__search_files(query="<company> TAM SAM SOM")
+
+# Financials & cap table
 mcp__Google_Drive__search_files(query="<company> financial model")
 mcp__Google_Drive__search_files(query="<company> cap table")
+
+# Tech DD and other materials
 mcp__Google_Drive__search_files(query="<company> tech DD")
 mcp__Google_Drive__search_files(query="<company> pitch deck")
 mcp__Google_Drive__search_files(query="<company> expert feedback")
-mcp__Google_Drive__search_files(query="<company> market sizing")
 
 # For each found file:
 mcp__Google_Drive__read_file_content(file_id)
-  → extract financial projections, cap table details, tech findings
 ```
+
+**Priority rule for Market & Competition and Market Sizing:**
+If a competitive analysis doc or market sizing doc exists in Drive, use it as the primary source for those sections. Do NOT re-research competitors from Specter or the web if a Drive doc already covers them — extract and summarise from the existing document instead. Only fall back to Specter or web search to fill specific gaps (e.g. a competitor listed in the Drive doc but lacking detail, or a market sizing figure that needs a more recent source).
+
+**Priority rule for Financials:**
+The financial model in Drive is the authoritative source for the Financials section. Pull projected ARR, burn, and unit economics from it directly rather than deriving from Specter or web data.
 
 ---
 
@@ -205,9 +221,11 @@ Follow the exact bullet structure:
 - Key findings from tech deep dive
 
 ### Market & Competition
-- Simple bottom-up model for home market, Top-5 Europe, and Global (use the market sizing table)
+**Source priority: Drive docs first.** If a market sizing file or competitive analysis file was found in Step 4, use it as the primary source for this entire section. Do not re-run external research if Drive already covers it.
+
+- Simple bottom-up model for home market, Top-5 Europe, and Global (pull figures from the market sizing doc in Drive; if no Drive doc exists, build from Specter + web data)
 - Ability and effort to scale countries (regulatory, localisation, GTM cost)
-- Overview of competition including feature comparison table
+- Overview of competition including feature comparison table (extract from the competitive analysis doc in Drive; if no Drive doc exists, build from Specter `find_similar_companies` + web)
 
 Note: if company's market and GTM are tightly coupled, combine into "Market, Go-To-Market & Competition" — set `market_header` accordingly.
 
