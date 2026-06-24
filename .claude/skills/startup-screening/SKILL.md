@@ -23,6 +23,18 @@ mcp__vc-knowledge-hub__get_company("<company name>")
 mcp__vc-knowledge-hub__ask("Summarise 42CAP's view of <company name>: thesis, key concerns, IC feedback, and any prior scoring.")
   → synthesised answer with citations — use to pre-populate scorecard context
 
+mcp__vc-knowledge-hub__get_thesis_themes()
+  → retrieve 42CAP's active thesis themes — score Dimension 3 (Market Timing) and Dimension 4 (Moat) against fund thesis
+
+mcp__vc-knowledge-hub__search_research_findings("<company name>")
+  → surface any prior research or analysis already saved on this company or sector
+
+mcp__vc-knowledge-hub__search_investor_insights("<company name>")
+  → retrieve saved investor insights that may inform scoring on unit economics or founder-market fit
+
+mcp__vc-knowledge-hub__check_companies("<company name>")
+  → run a quick eligibility or criteria check against known firm filters
+
 mcp__vc-knowledge-hub__get_similar_companies("<company name>")
   → comparable companies in deal flow — inform competitive moat and market timing dimensions
 
@@ -31,6 +43,23 @@ mcp__vc-knowledge-hub__get_meeting_feed()
 ```
 
 Cache: any prior GO/NO-GO verdicts, known red flags, founder feedback, and any market or unit economics data already gathered by the team. Do not re-derive what is already documented.
+
+After completing the screen, save the outcome:
+
+```
+mcp__vc-knowledge-hub__save_research_analysis("<company name>", summary="<verdict + rationale>")
+  → persist the scorecard outcome and key reasoning for future reference
+
+mcp__vc-knowledge-hub__store_insight("<insight>")
+  → log any notable signal (e.g. unusually strong founder-market fit, a red flag) that should surface in future searches
+```
+
+If the verdict is NO-GO and a pass email is needed:
+
+```
+mcp__vc-knowledge-hub__schedule_pass_email("<company name>")
+  → schedule the pass communication (check mcp__vc-knowledge-hub__list_pass_emails first to avoid duplicates)
+```
 
 If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
 

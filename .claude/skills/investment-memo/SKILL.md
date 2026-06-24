@@ -36,8 +36,20 @@ mcp__vc-knowledge-hub__get_company("<company name>")
   → full company profile: CRM fields, notes, meeting history, pitch deck content extracted
   → cache: round details, valuation, team names, product description, any thesis drafts
 
+mcp__vc-knowledge-hub__extract_memo_data("<company name>")
+  → extract structured data from any prior memo on file — fast-path to populating standard fields
+
 mcp__vc-knowledge-hub__ask("What is 42CAP's current view on <company name>? Summarise the investment thesis, key concerns, and any IC feedback.")
   → synthesised answer with citations from all connected sources
+
+mcp__vc-knowledge-hub__get_thesis_themes()
+  → retrieve 42CAP's active thesis themes — use to frame Investment Criteria alignment and key bets
+
+mcp__vc-knowledge-hub__search_research_findings("<company name>")
+  → surface any prior research or analysis already saved on this company or sector
+
+mcp__vc-knowledge-hub__search_investor_insights("<company name>")
+  → retrieve any saved investor insights relevant to this deal
 
 mcp__vc-knowledge-hub__list_portfolio()
   → retrieve current portfolio for synergy or conflict checks (referenced in Investment Criteria)
@@ -778,6 +790,20 @@ SendUserFile(files=[output_path], status="normal")
 ```
 
 Do **not** commit the generated `.docx` to the skills repo — it is a per-deal output.
+
+---
+
+## Step 9 — Finalise in VC Knowledge Hub
+
+After the `.docx` is generated and sent, register the memo and save key findings for future reuse.
+
+```
+mcp__vc-knowledge-hub__finalize_memo("<company name>")
+  → mark the memo as finalised in the knowledge hub — enables future extract_memo_data calls
+
+mcp__vc-knowledge-hub__save_research_analysis("<company name>", summary="<one-paragraph investment thesis summary>")
+  → persist the core thesis and findings so they surface in future search_research_findings queries
+```
 
 ---
 

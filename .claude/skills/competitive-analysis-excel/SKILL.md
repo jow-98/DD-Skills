@@ -35,6 +35,14 @@ Run all in parallel:
 
 For each competitor the hub returns, call `mcp__vc-knowledge-hub__get_company` to pull their full profile.
 
+Also run:
+- `mcp__vc-knowledge-hub__search_research_findings("<startup name>")` — retrieve any prior competitive research already saved
+- `mcp__vc-knowledge-hub__check_companies("<competitor names>")` — batch-check key competitors against known firm data
+- `mcp__vc-knowledge-hub__search_operator_playbooks("<sector>")` — surface operator playbooks with competitive positioning insights
+
+After completing the analysis, save for future reuse:
+`mcp__vc-knowledge-hub__save_research_analysis("<startup name>", summary="<competitive positioning summary>")`.
+
 If the VC Knowledge Hub returns no results or incomplete data, fall through to the individual connectors directly (Granola, Superhuman, Google Drive, Affinity, Specter, Evertrace, and any other relevant connector) — those remain the authoritative sources.
 
 **1b. Affinity CRM** (for pipeline stage and field values not in the hub)
