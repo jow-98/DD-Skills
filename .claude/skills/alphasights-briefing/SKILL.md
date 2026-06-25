@@ -127,7 +127,7 @@ Fill the template below with all gathered content. Do not leave any placeholder 
 
 **EMAIL TEMPLATE:**
 
-Subject: AlphaSights – Expert Calls | [Company Name] DD
+Subject: Expert Calls [Company Name] x 42CAP x AlphaSights
 
 ---
 
@@ -178,6 +178,7 @@ Before presenting the draft, verify:
 - [ ] Expert types are specific to the ICP — not generic ("executives" or "industry professionals")
 - [ ] Discussion topics are derived from WYHTBI theses — not generic questions
 - [ ] Format section is unchanged from template (do not paraphrase or shorten it)
+- [ ] Subject line format: "Expert Calls [Company Name] x 42CAP x AlphaSights" — no deviations
 - [ ] Sign-off: "Best, Johannes"
 
 ---

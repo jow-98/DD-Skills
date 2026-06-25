@@ -70,7 +70,7 @@ Fill all bracketed placeholders before presenting the draft. Do not leave any pl
 
 ### ENGLISH TEMPLATE
 
-Subject: AlphaSights Expert Calls | [Company Name]
+Subject: [Company Name] Expert Calls with 42CAP and AlphaSights
 
 ---
 
@@ -140,7 +140,7 @@ Before presenting the draft, verify:
 - [ ] German template: singular/plural forms consistent with the number of founders
 - [ ] Format bullets are unchanged from the template — do not shorten or paraphrase
 - [ ] Sign-off: "Best, Johannes" (English) or "Gruß, Johannes" (German)
-- [ ] Subject line filled
+- [ ] Subject line format: "[Company Name] Expert Calls with 42CAP and AlphaSights" — no deviations
 
 ---
 
