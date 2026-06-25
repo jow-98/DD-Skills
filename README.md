@@ -20,7 +20,8 @@ A curated library of Claude AI skills for venture capital due diligence and inve
 | `startup-screening` | Three-phase DD screen: Phase 1 = 9-dimension GO/NO-GO scorecard; Phase 2 = fundamentals (market sizing, unit economics, competitive position, team); Phase 3 = business case (KPI framework, return scenarios, investment thesis). | Structured memo |
 | `sector-research` | Two-layer market context: Layer 1 = sector/industry brief (TAM, trends, players, whitespace); Layer 2 = macro environment (indices, VIX, risk-on/off, sector rotation, investment climate). | Brief + macro snapshot |
 | `investment-memo` | Generate a 42CAP Investment Memo in Word (.docx) format. Pulls from Affinity (deal details, notes), Granola (founder/reference/expert call transcripts), Specter (company profile, team, competitors), Google Drive (financial model, cap table, tech DD), and Superhuman (email threads). Matches the 42CAP template exactly: cover table, Investment Criteria, Solution, Market & Competition, ESG, Financials, Funding, Team. | `.docx` file |
-| `alphasights-briefing` | Draft the two emails needed for AlphaSights expert calls: (1) outreach to AlphaSights (always English) with expert profiles derived from the ICP and discussion topics derived from WYHTBI theses; (2) founder briefing (English or German) explaining call format and what to prepare. Pulls from Affinity, Granola, Drive, and Superhuman. | Email drafts |
+| `alphasights-briefing` | Draft the AlphaSights outreach email (always English) for a company in DD. Expert profiles derived from the ICP; discussion topics derived from WYHTBI theses. Pulls from Affinity, Granola, Drive, and Superhuman. | Email draft |
+| `founder-briefing` | Draft the founder briefing email explaining the expert call format and what to prepare. English or German. Pulls founder name(s) and responsible 42CAP partners from Affinity and Granola. | Email draft |
 
 ## Supporting Skills
 
@@ -54,7 +55,7 @@ Skills are invoked with `/skill-name` in a Claude Code session, or Claude will t
 1. `/startup-screening <Company>` — quick GO/NO-GO (Phase 1, 15 min)
 2. If GO: `/market-sizing-excel <Company>` + `/competitive-analysis-excel <Company>`
 3. `/sector-research <vertical>` for macro context and timing
-4. `/alphasights-briefing <Company>` — draft the AlphaSights outreach email and/or founder briefing for expert calls
+4. `/alphasights-briefing <Company>` + `/founder-briefing <Company>` — draft the AlphaSights outreach email and the founder briefing for expert calls
 5. `/pmf-assessment` to evaluate product-market fit signals
 6. `/investment-memo <Company>` — generate the final Word memo for IC
 
