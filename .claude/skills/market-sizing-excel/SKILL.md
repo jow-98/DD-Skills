@@ -7,7 +7,7 @@ description: "Research a startup in due diligence and generate an Excel (.xlsx) 
 
 Research a startup's addressable market and produce a `.xlsx` file with a bottom-up market sizing in the standard DD format, including sourced data, scenario tables, and a top-down sanity check sheet.
 
-**Default methodology: Bottom-Up.** Always build the bottom-up model first (ICP company count × ACV × ICP Fit % × Market Share %). Top-down is a sanity check only — never drive the model from a top-down number. See `references/market-sizing-guide.md` for ICP definition standards, ACV benchmarks by category, and guidance on justifying ICP Fit % and Market Share %.
+**Default methodology: Bottom-Up.** Always build the bottom-up model first. Correct formula: TAM = Category company count × ACV; SAM = TAM × ICP Fit %; SOM = SAM × Market Share %. Top-down is a sanity check only — never drive the model from a top-down number. See `references/market-sizing-guide.md` for ICP definition standards, ACV benchmarks by category, and guidance on justifying ICP Fit % and Market Share %.
 
 ## Input
 
@@ -139,6 +139,19 @@ Record the exact source URL for each region's count. Do not estimate counts with
 
 ### 4. Determine ACV scenarios
 
+**First, classify the revenue model.** This determines how to decompose ACV into Volume × Price, which makes the pricing assumption explicit and auditable.
+
+| Model | ACV Formula | Example |
+|---|---|---|
+| Subscription | 12 × monthly fee | 12 × €8,000/mo = €96,000/yr |
+| Seat-based | Seats/customer × price/seat/yr | 20 seats × €4,800 = €96,000/yr |
+| Transaction | Transactions/yr × price/txn | 5,000 txns × €5 = €25,000/yr |
+| Take-rate | GMV/customer/yr × rate | €2M GMV × 3% = €60,000/yr |
+| Usage | Units/yr × price/unit | 1M API calls × €0.05 = €50,000/yr |
+| Hybrid | Stream 1 ACV + Stream 2 ACV | €48,000 sub + €25,000 txn = €73,000/yr |
+
+Use Volume × Price to arrive at ACV — not a single estimate. For hybrid models calculate each stream separately. Document the Volume and Price assumptions in the Notes block.
+
 Use internal DD context (Step 0) as the primary source — external research fills gaps only.
 
 Priority order:
@@ -176,13 +189,13 @@ If sources conflict, model each as a separate named scenario (e.g. "Expert WTP" 
 For each region × ACV scenario:
 
 ```
-TAM = # ICP companies (total universe) × ACV
+TAM = # Category companies (core category, sector + size filtered, NOT ICP-filtered) × ACV
 SAM = TAM × ICP Fit %
 SOM = SAM × Market Share %
 ```
 
-ICP Fit % = fraction of total universe that truly matches (right size, right pain, right readiness). Be conservative (20–50%).
-Market Share % = realistic obtainable share given stage and GTM. Be conservative (0.5–5% for beachhead).
+ICP Fit % = fraction of the category universe that specifically matches the ICP (right use case, buying readiness, product fit). This is the TAM → SAM step. Typical range: 20–60%. Must be explained in the Notes block.
+Market Share % = realistic competitive share given stage and GTM. Be conservative (0.5–5% for beachhead). Must be explained in the Notes block.
 
 ### 6. Find top-down market reports
 
@@ -236,7 +249,7 @@ Write and execute a Python script to produce the `.xlsx` file with **two sheets*
 Row 1 of block: Scenario label (e.g. "V1 – Initial ACV") — bold, merged across all columns, darker background.
 
 Row 2 of block: Column headers:
-`Region | # ICP Companies | ACV (€) | ICP Fit % | TAM (€) | Market Share % | SAM (€) | Source`
+`Region | # Category Companies | ACV (€) | TAM (€) | ICP Fit % | SAM (€) | Market Share % | SOM (€) | Source`
 
 Data rows: one per region, then a **Total** row (summing TAM and SAM).
 
@@ -293,9 +306,9 @@ ws1.title = "Bottom-Up"
 startup_name = "..."
 generated_date = "..."
 
-headers = ["Region", "# ICP Companies", "ACV (€)", "ICP Fit %",
-           "TAM (€)", "Market Share %", "SAM (€)", "Source"]
-n_cols = len(headers)
+headers = ["Region", "# Category Companies", "ACV (€)", "TAM (€)",
+           "ICP Fit %", "SAM (€)", "Market Share %", "SOM (€)", "Source"]
+n_cols = len(headers)  # 9
 
 thin = Side(style="thin")
 border = Border(left=thin, right=thin, top=thin, bottom=thin)
@@ -344,57 +357,61 @@ for scenario in scenarios:
 
     first_data_row = current_row
     for r in scenario["regions"]:
+        # Columns: Region | # Category Companies | ACV (€) | TAM (€) | ICP Fit % | SAM (€) | Market Share % | SOM (€) | Source
         row_data = [
             r["name"],
-            r["count"],
-            r["acv"],
-            r["icp_fit_pct"],
-            None,  # TAM — formula written below
-            r["market_share_pct"],
-            None,  # SAM — formula written below
-            r["source"],
+            r["count"],       # col 2: category company count (NOT ICP-filtered)
+            r["acv"],         # col 3
+            None,             # col 4: TAM — formula
+            r["icp_fit_pct"], # col 5
+            None,             # col 6: SAM — formula
+            r["market_share_pct"],  # col 7
+            None,             # col 8: SOM — formula
+            r["source"],      # col 9
         ]
         for col, val in enumerate(row_data, 1):
             cell = ws1.cell(current_row, col, val)
             cell.border = border
-            if col == 8:  # Source
+            if col == 9:  # Source
                 cell.font = Font(color="0000FF", underline="single")
-            if col in (4, 6):  # percentages
+            if col in (5, 7):  # percentages: ICP Fit %, Market Share %
                 cell.number_format = "0%"
-            if col in (5, 7):  # currency
+            if col in (3, 4, 6, 8):  # currency: ACV, TAM, SAM, SOM
                 cell.number_format = '#,##0 "€"'
-        # TAM formula: =B*C*D  (count × ACV × ICP fit %)
-        tam_cell = ws1.cell(current_row, 5)
-        tam_cell.value = f"=B{current_row}*C{current_row}*D{current_row}"
+        # TAM = Category count × ACV  (col 4 = col 2 × col 3)
+        tam_cell = ws1.cell(current_row, 4)
+        tam_cell.value = f"=B{current_row}*C{current_row}"
         tam_cell.number_format = '#,##0 "€"'
         tam_cell.border = border
-        # SAM formula: =E*F  (TAM × market share %)
-        sam_cell = ws1.cell(current_row, 7)
-        sam_cell.value = f"=E{current_row}*F{current_row}"
+        # SAM = TAM × ICP Fit %  (col 6 = col 4 × col 5)
+        sam_cell = ws1.cell(current_row, 6)
+        sam_cell.value = f"=D{current_row}*E{current_row}"
         sam_cell.number_format = '#,##0 "€"'
         sam_cell.border = border
+        # SOM = SAM × Market Share %  (col 8 = col 6 × col 7)
+        som_cell = ws1.cell(current_row, 8)
+        som_cell.value = f"=F{current_row}*G{current_row}"
+        som_cell.number_format = '#,##0 "€"'
+        som_cell.border = border
         current_row += 1
 
     last_data_row = current_row - 1
     # Total row — SUM formulas so totals recalculate when inputs change
-    total_row_data = ["Total", "", "", "", None, "", None, ""]
+    total_row_data = ["Total", "", "", None, "", None, "", None, ""]
     for col, val in enumerate(total_row_data, 1):
         cell = ws1.cell(current_row, col, val)
         cell.font = Font(bold=True)
         cell.fill = blue_fill
         cell.border = border
-        if col in (5, 7):
+        if col in (4, 6, 8):
             cell.number_format = '#,##0 "€"'
-    ws1.cell(current_row, 5).value = f"=SUM(E{first_data_row}:E{last_data_row})"
-    ws1.cell(current_row, 5).number_format = '#,##0 "€"'
-    ws1.cell(current_row, 5).font = Font(bold=True)
-    ws1.cell(current_row, 5).fill = blue_fill
-    ws1.cell(current_row, 5).border = border
-    ws1.cell(current_row, 7).value = f"=SUM(G{first_data_row}:G{last_data_row})"
-    ws1.cell(current_row, 7).number_format = '#,##0 "€"'
-    ws1.cell(current_row, 7).font = Font(bold=True)
-    ws1.cell(current_row, 7).fill = blue_fill
-    ws1.cell(current_row, 7).border = border
+    for sum_col, col_letter in [(4, "D"), (6, "F"), (8, "H")]:
+        c = ws1.cell(current_row, sum_col)
+        c.value = f"=SUM({col_letter}{first_data_row}:{col_letter}{last_data_row})"
+        c.number_format = '#,##0 "€"'
+        c.font = Font(bold=True)
+        c.fill = blue_fill
+        c.border = border
     current_row += 2  # blank row between scenarios
 
 # Notes block

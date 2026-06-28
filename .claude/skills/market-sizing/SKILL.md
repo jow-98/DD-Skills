@@ -107,7 +107,7 @@ Based on the product, define the Ideal Customer Profile precisely:
 - Geography (which regions are realistically addressable in the next 3–5 years)
 - Buying signal (what triggers them to buy this product)
 
-Document your ICP definition explicitly — it becomes the denominator for the bottom-up count.
+Document your ICP definition explicitly. The denominator for the bottom-up count (Step 3) is the broader category universe; ICP Fit % is the correction factor that narrows category to ICP.
 
 Use `WebSearch` to validate the ICP definition if unclear:
 - `"<startup name>" customers case study`
@@ -132,8 +132,9 @@ Value theory estimates market size from the economic value the product creates, 
 ```
 Value per customer       = Problem cost × % solved by product
 Price per customer (ACV) = Value × WTP % (10–30%)
-TAM                      = Total ICP customers × ACV
-SAM / SOM                = apply same ICP Fit % and Market Share % from Step 3–5
+TAM                      = Total category companies × ACV
+SAM                      = TAM × ICP Fit %
+SOM                      = SAM × Market Share %
 ```
 
 **Output:** One additional row in the assumptions table and one ACV scenario in the TAM/SAM table labelled "Value Theory ACV".
@@ -146,7 +147,7 @@ Cross-check: value-theory ACV vs. bottom-up ACV should be within 2–3×. Large 
 
 This is the core of the bottom-up. For each relevant region (typically EU, USA, and any other key geographies):
 
-a. Find the total universe of companies matching the ICP size/industry criteria.
+a. Find the total universe of companies in the core target category — filtered by sector and size band, but NOT yet by ICP-specific criteria. This is the TAM denominator. Source the broadest defensible count within the category; ICP Fit % (Step 3b) is the correction factor for the ICP-specific narrowing.
    Use `WebSearch` with queries like:
    - `number of [industry] companies [region] >250 employees eurostat`
    - `[NACE/NAICS code] enterprises [region] size class statistics`
@@ -182,11 +183,24 @@ a. Find the total universe of companies matching the ICP size/industry criteria.
    - Retail: EuroCommerce, NRF
    - Logistics: ECG, GS1
 
-b. Apply an ICP fit % — the fraction of those companies that truly match (right size tier, right use case pain, right buying readiness). Typical range: 20–50%. Document your reasoning.
+b. Apply an ICP Fit % — the fraction of the category universe that specifically matches the ICP (right use case pain, buying readiness, product fit). This is the TAM → SAM step. Typical range: 20–60%. Document your reasoning explicitly — this is the number investors will challenge most.
 
 c. Record the source URL for each company count.
 
 ### 4. Determine ACV (Annual Contract Value)
+
+**First, classify the revenue model.** This determines how to decompose ACV into Volume × Price, which makes the pricing assumption auditable and explicit.
+
+| Model | ACV Formula | Example |
+|---|---|---|
+| Subscription | 12 × monthly fee | 12 × €8,000/mo = €96,000/yr |
+| Seat-based | Seats/customer × price/seat/yr | 20 seats × €4,800 = €96,000/yr |
+| Transaction | Transactions/yr × price/txn | 5,000 txns × €5 = €25,000/yr |
+| Take-rate | GMV/customer/yr × rate | €2M GMV × 3% = €60,000/yr |
+| Usage | Units/yr × price/unit | 1M API calls × €0.05 = €50,000/yr |
+| Hybrid | Stream 1 ACV + Stream 2 ACV | €48,000 sub + €25,000 txn = €73,000/yr |
+
+Use Volume × Price to build the ACV figure — not a single estimate. Validate: units must cancel to €/year. For hybrid models, calculate each stream separately and sum.
 
 Use internal DD context first (Step 0), then fill gaps with external research.
 
@@ -214,10 +228,12 @@ Always cite the source or reasoning for every ACV figure used.
 For each region and scenario:
 
 ```
-TAM  = # ICP companies (total universe) × ACV
-SAM  = TAM × ICP Fit %          (realistically serviceable given go-to-market focus)
-SOM  = SAM × Market Share %     (obtainable within 5 years given competitive dynamics)
+TAM  = # Category companies (core category, sector + size filtered, NOT ICP-filtered) × ACV
+SAM  = TAM × ICP Fit %          (ICP-specific narrowing: right use case, buying readiness, product fit)
+SOM  = SAM × Market Share %     (competitive share obtainable within 5 years)
 ```
+
+ICP Fit % guidance: 20–60% depending on how niche the product is within the category. A product that solves a universal pain across the category sits at the high end; a product targeting a specific sub-segment sits at the low end.
 
 Market Share % guidance:
 - Beachhead / early-stage: 0.5–2%
@@ -315,13 +331,13 @@ _Note "No data found" for any source with no results — do not skip._
 | Market share % (beachhead) | X% | [reasoning] |
 | CAGR | X% | [source] |
 
-### TAM / SAM by Region — [Scenario: e.g. "Mid ACV"]
+### TAM / SAM / SOM by Region — [Scenario: e.g. "Mid ACV"]
 
-| Region | # ICP Companies | ACV | ICP Fit % | TAM | Market Share % | SAM | Source |
-|---|---|---|---|---|---|---|---|
-| EU | X | €Y | Z% | €A | B% | €C | [URL] |
-| USA | X | €Y | Z% | €A | B% | €C | [URL] |
-| **Total** | | | | **€A** | | **€C** | |
+| Region | # Category Companies | ACV | TAM | ICP Fit % | SAM | Market Share % | SOM | Source |
+|---|---|---|---|---|---|---|---|---|
+| EU | X | €Y | €A | Z% | €B | C% | €D | [URL] |
+| USA | X | €Y | €A | Z% | €B | C% | €D | [URL] |
+| **Total** | | | **€A** | | **€B** | | **€D** | |
 
 _Repeat table for each ACV scenario if multiple_
 
@@ -366,7 +382,7 @@ Bottom-up vs. top-down: [aligned / conservative / aggressive — explain]
 - If the startup targets a niche within a broader industry, do not use the full industry count — apply ICP fit % carefully.
 - Never cite ChatGPT, Claude, or AI-generated content as a source. Only cite primary data (statistics agencies, analyst reports, company filings, reputable trade associations).
 - If Specter returns no useful data, rely on WebSearch — but always fetch and read the actual source page to verify the numbers.
-- Distinguish clearly between TAM (total universe if everyone bought), SAM (realistic serviceable subset), and SOM (obtainable share).
+- Definitions: TAM = category-level universe × ACV (no ICP filter — sector and size band only); SAM = TAM × ICP Fit % (ICP-specific narrowing); SOM = SAM × Market Share % (competitive share). Never apply ICP-specific criteria before calling something TAM.
 
 
 ---
