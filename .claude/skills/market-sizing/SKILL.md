@@ -217,7 +217,6 @@ Priority order for ACV inputs:
    - **SaaStr** — search `saastr average contract value [category] [year]`
    - **Tomasz Tunguz benchmarks** — search `tomtunguz.com ACV [category]`
    - **Competitor pricing inference** — find 2–3 direct competitors' public pricing pages or press releases mentioning deal sizes; infer ACV range
-6. **Category SaaS benchmarks** — search `<category> SaaS average contract value benchmark`
 
 If sources conflict (e.g. founder claims higher ACV than experts suggest is achievable), model both as separate scenarios and flag the divergence explicitly.
 
